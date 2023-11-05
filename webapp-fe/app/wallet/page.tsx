@@ -160,8 +160,8 @@ const WalletPage = () => {
                 <div className="border border-neutral-500 mb-6 w-full rounded-xl bg-black min-h-[200px]">
                     <div className="p-5">
                         <div className="mb-3">
-                            <div className="w-1/2 md:w-1/4 inline-block">
-                                <span className="text-white text-md">
+                            <div className="w-1/2 md:w-1/4 inline-block top-0">
+                                <span className="text-white text-md top-0">
                                     Saving Account:
                                 </span>  
                             </div>
@@ -171,7 +171,7 @@ const WalletPage = () => {
                                     <Skeleton className="float-right" width={'75%'} count={1} />
                                     ) : (
                                     <>
-                                        <span className="text-white text-md">{data?.wallet_name}</span>
+                                        <span className="text-white text-md float-right md:float-left">{data?.wallet_name}</span>
                                     </>
                                 )}
                                 <CopyToClipboard onCopy={onCopy} text={savingWalletAddress}>
@@ -191,15 +191,15 @@ const WalletPage = () => {
                                     <Skeleton className="float-right" width={'75%'} count={1} />
                                     ) : (
                                     <>
-                                    <span className="text-white font-semibold text-2xl md:text-2xl">{savingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
-                                    <br className="md:hidden" />
-                                    <span className="hidden md:inline-block">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                    <span className="text-green-500 text-xs md:text-base"> APY : {APY.toLocaleString(undefined, {minimumFractionDigits: 2})} %</span>
+                                        <span className="text-white font-semibold text-xl md:text-2xl float-right md:float-left md:ml-4">{savingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
+                                        <br className="md:hidden" />
+                                        <span className="hidden md:inline-block">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <span className="text-green-500 text-xs md:text-sm float-right md:float-left md:ml-4"> APY : {APY.toLocaleString(undefined, {minimumFractionDigits: 2})} %</span>
                                     </>
                                 )}
                             </div>
                         </div>
-                        <span className="text-sm text-white">
+                        <span className="text-xs md:text-sm text-white">
                             *Not include crypto wallet balance (only aUSDC)
                         </span>
                     </div>
@@ -240,19 +240,19 @@ const WalletPage = () => {
                                 <Skeleton className="float-right" width={'75%'} count={1} />
                                 ) : (
                                 <>
-                                <span className="text-white font-semibold text-2xl md:text-2xl">{cryptoBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
+                                <span className="text-white font-semibold text-xl md:text-2xl">{cryptoBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
                                 </>
                             )}
                         </div>
                     </div>
                     <div>
-                        <span className="text-sm text-white">
+                        <span className="text-xs md:text-sm text-white">
                             *Not include saving account balance (Show only some assets                             <a data-tooltip-id="my-tooltip" data-tooltip-content="MATIC, WETH, USDT, USDC"><FontAwesomeIcon icon={faCircleInfo}/></a>)
                             <Tooltip id="my-tooltip" />
                         </span>
                     </div>
                     <div className="w-full bg-gray-200 cursor-pointer mt-10 text-center">
-                        <span className="text-black text-md inline-block p-4 w-1/2 text-center mx-auto" onClick={() => router.push('/wallet/deposit')}>
+                        <span className="text-black text-sm md:text-md inline-block p-4 w-1/2 text-center mx-auto" onClick={() => router.push('/wallet/deposit')}>
                             Deposit to Saving
                         </span>
                     </div>

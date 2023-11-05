@@ -15,28 +15,52 @@ const InvestPage = () => {
                     <span className="text-2xl font-semibold">Invest</span>
                 </div>
             <div className="p-6">
-                <div className="text-black text-xl font-semibold">
-                    Earn Fixed Yield
-                </div>
-                <div className="w-full bg-white rounded-xl p-6 mt-5">
-                    <div className="inline-block">
-                        <div className="top-0">
-                            <span className="font-semibold text-xl">Maturity</span>
-                        </div>
+                <div>
+                    <div className="text-black text-xl font-semibold">
+                        Earn Fixed Yield
+                    </div>
+                    <div className="w-full bg-white rounded-xl p-6 mt-2">
+                        <span className="text-md font-semibold">Protocol: Pendle Finance</span><br/>
                         <div>
-                            27 Jun 2024 (239d)<br/>
-                            <span className="text-green-500">4.789% Fixed APY</span>
+                            <div className="">
+                                <span className="font-semibold text-xl">Maturity</span>
+                            </div>
+                            <div>
+                                27 Jun 2024 (239d)<br/>
+                                <span className="text-green-500">4.789% Fixed APY</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="ml-3 inline-block border-l border-black h-[100px] border-2"></div>
-                    <div className="ml-5 inline-block">
-                        <span>Protocol: Pendle Finance</span><br/><br/>
+                        {/* <div className="ml-3 border-l border-black h-[100px] border-2"></div> */}
                         <Image src='https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png' width={30} height={30} alt="" />
-                        <span className="font-semibold">Asset: USDT</span>
+                        <span className="font-semibold">Underlying Asset: USDT</span>
+                        <Button className="w-full" disabled>
+                            Invest This
+                        </Button>
                     </div>
-                    <Button className="inline-block float-right" disabled>
-                        Invest This
-                    </Button>
+                </div>
+                <hr className="w-full border-black mt-4 mb-3"/>
+                <div className="mb-10">
+                    <div className="text-black text-xl font-semibold">
+                        RWA
+                    </div>
+                    <div className="w-full bg-white rounded-xl p-6 mt-2">
+                        <span className="text-md font-semibold">Protocol: Gold Finch</span><br/>
+                        <div>
+                            <div className="">
+                                <span className="font-semibold text-xl">Maturity</span>
+                            </div>
+                            <div>
+                                27 Jun 2024 (239d)<br/>
+                                <span className="text-green-500">7.6% APY</span>
+                            </div>
+                        </div>
+                        {/* <div className="ml-3 border-l border-black h-[100px] border-2"></div> */}
+                        {/* <Image src='https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png' width={30} height={30} alt="" /> */}
+                        <span className="font-semibold">Underlying Asset: Private Credit</span>
+                        <Button className="w-full" disabled>
+                            Invest This
+                        </Button>
+                    </div>
                 </div>
             </div>
             {/* Bottom Navbar */}

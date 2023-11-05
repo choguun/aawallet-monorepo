@@ -38,7 +38,7 @@ const WalletReceivePage = () => {
     const router = useRouter();
 
     return (
-        <div className="bg-gray-200 w-[600px]">
+        <div className="bg-gray-200 w-screen md:w-[600px]">
             { isLoading &&
                  <ReactLoading className="absolute top-1/3 md:top-1/2 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
             }
@@ -53,7 +53,7 @@ const WalletReceivePage = () => {
                             <QRCode className="w-full mx-auto" value={walletAddress} />
                         </div>
                         <div className="mt-3 text-center text-xl">
-                            <span>{walletAddress}</span>
+                            <p className="break-words">{walletAddress}</p>
                         </div>
                     </div>
                 </div>
