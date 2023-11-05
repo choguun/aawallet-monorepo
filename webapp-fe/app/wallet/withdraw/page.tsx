@@ -3,20 +3,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { supplyAave, withdrawAave } from '@/lib/store';
-import Cookies from 'js-cookie';
+import { withdrawAave } from '@/lib/store';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { ethers } from 'ethers';
 import erc20Abi from '@/assets/abis/erc20.abi.json';
 import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
-
+import { getAccount } from '@/lib/service';
 
 const WithdrawPage = () => {
     const router = useRouter();
 
-    const [token, setToken] = useState<string>('');
+    // const [token, setToken] = useState<string>('');
     const [account, setAccount] = useState<any>({});
     const [amount, setAmount] = useState<number>(0);
     const [savingWalletAddress, setSavingWalletAddress] = useState<string>('');
@@ -41,21 +39,19 @@ const WithdrawPage = () => {
         setAmount(event.target.value);
     };
 
-    useEffect(() => {
-        const token = Cookies.get("hanko");
-        if (token) {
-            setToken(token);
-        }
-      }, []);
+    // useEffect(() => {
+    //     const token = Cookies.get("hanko");
+    //     if (token) {
+    //         setToken(token);
+    //     }
+    //   }, []);
 
       useEffect(() => {
-        const getAccount = async () => {
+        const getAccountData = async () => {
             try {
-                const response = await axios.get<any>("/api/get-account", { headers: { Authorization: `Bearer ${token}` }});
-                
-                const data = response.data;
+                const data = await getAccount();    
 
-                let account = {
+               let account = {
                     crypto_wallet_address :  data.crypto_wallet_address,
                     saving_wallet_address : data.saving_wallet_address,
                     crypto_wallet_salt : data.crypto_wallet_salt,
@@ -69,10 +65,10 @@ const WithdrawPage = () => {
                 router.push('/login');
             }
         }
-        if(token.length > 0) {
-            getAccount();
-        }
-      }, [token])
+        // if(token.length > 0) {
+          getAccountData();
+        // }
+      }, [])
 
       const aUSDCToken = '0x4086fabeE92a080002eeBA1220B9025a27a40A49';
 

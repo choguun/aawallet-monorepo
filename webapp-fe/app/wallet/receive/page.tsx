@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import QRCode from 'react-qr-code';
-import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
+import { getAccount } from '@/lib/service';
 
 type Wallet = {
     wallet_name: string;
@@ -15,20 +15,19 @@ type Wallet = {
 
 const WalletReceivePage = () => {
     const [walletAddress, setWalletAddress] = useState('0x0000000000000000000000000000000000000000');
-    const [token, setToken] = useState<string>('');
+    // const [token, setToken] = useState<string>('');
 
-    useEffect(() => {
-        const token = Cookies.get("hanko");
-        if (token) {
-            setToken(token);
-        }
-      }, []);
+    // useEffect(() => {
+    //     const token = Cookies.get("hanko");
+    //     if (token) {
+    //         setToken(token);
+    //     }
+    //   }, []);
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: [token],
+        queryKey: [walletAddress],
         queryFn: async () => {
-          const response = await axios.get<Wallet>("/api/get-account", { headers: { Authorization: `Bearer ${token}` }});
-          const data = response.data;
+          const data = await getAccount();
           setWalletAddress(data.saving_wallet_address);
 
           return data;

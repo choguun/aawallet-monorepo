@@ -8,7 +8,6 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
 import { ethers } from 'ethers';
 import erc20Abi from '@/assets/abis/erc20.abi.json';
@@ -17,6 +16,7 @@ import toast from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { getAccount } from '@/lib/service';
 
 
 type Wallet = {
@@ -33,7 +33,7 @@ const WalletPage = () => {
     const [savingBalance, setSavingBalance] = useState<number>(0);
     const [cryptoBalance, setCryptoBalance] = useState<number>(0);
     const [APY, setAPY] = useState<number>(0);
-    const [token, setToken] = useState<string>('');
+    // const [token, setToken] = useState<string>('');
     const [copied, setCopied] = useState(false);
     const [loading, setLoading] = useState(true);
     const [loading2, setLoading2] = useState(true);
@@ -46,12 +46,12 @@ const WalletPage = () => {
 
     const provider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.infura.io/v3/737a357547e14224aa61a4b97d2754ef');
 
-    useEffect(() => {
-        const token = Cookies.get("hanko");
-        if (token) {
-            setToken(token);
-        }
-      }, []);
+    // useEffect(() => {
+    //     const token = Cookies.get("hanko");
+    //     if (token) {
+    //         setToken(token);
+    //     }
+    //   }, []);
     
     useEffect(() => {
         const getSavingBalance = async () => {
@@ -122,10 +122,9 @@ const WalletPage = () => {
     }, [savingWalletAddress]);
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: [token],
+        queryKey: [savingWalletAddress],
         queryFn: async () => {
-          const response = await axios.get<Wallet>("/api/get-account", { headers: { Authorization: `Bearer ${token}` }});
-          const data = response.data;
+          const data = await getAccount();
 
           setSavingWalletAddress(data.saving_wallet_address);
           setCryptoWalletAddress(data.crypto_wallet_address);

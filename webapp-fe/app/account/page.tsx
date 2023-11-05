@@ -3,19 +3,16 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button';
-import { Hanko } from '@teamhanko/hanko-elements';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { createAccount, updateAccount } from '@/lib/service';
+import { updateAccount, getHakoProfile } from '@/lib/service';
 import toast from 'react-hot-toast';
 import { NavBar } from '@/components/NavBar';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-
+import { getAccount } from '@/lib/service';
 import { LogoutBtn } from '@/components/LogoutButton';
 
 const schema = yup
@@ -37,13 +34,9 @@ type Profile = {
 }
 
 const AccountPage = () => {
-    const hankoApi = process.env.NEXT_PUBLIC_HANKO_API_URL!;
-    const hanko = new Hanko(hankoApi);
-
     const [Email, setEmail] = useState<string>('');
     const [Uid, setUid] = useState<string>('');
-    const [token, setToken] = useState<string>('');
-
+    
     const {
         register,
         handleSubmit,
@@ -56,7 +49,7 @@ const AccountPage = () => {
 
     const onSubmit: SubmitHandler<any> = async (data : any) => {
         try {
-            await updateAccount(data, token);
+            await updateAccount(data);
             router.push(`/wallet`);
         } catch(error : any) {
             console.error(error);
@@ -64,16 +57,10 @@ const AccountPage = () => {
         }
     }
 
-    useEffect(() => {
-        const token = Cookies.get("hanko");
-        if (token) {
-            setToken(token);
-        }
-    }, []);
    
     useEffect(() => { 
         const getAccount = async () => {
-            const {id, email} = await hanko.user.getCurrent();
+            const {id, email} = await getHakoProfile();
             console.log(`user-id: ${id}, email: ${email}`);
         
             setEmail(email);
@@ -87,10 +74,10 @@ const AccountPage = () => {
     }, []);
 
     const { data, isLoading } = useQuery({
-        queryKey: [token],
+        queryKey: [Uid],
         queryFn: async () => {
-          const response = await axios.get<Profile>("/api/get-account", {headers: { Authorization: `Bearer ${token}`  }});
-          return response.data;
+          const data = await getAccount();
+          return data;
         }
     });
 
@@ -130,9 +117,7 @@ const AccountPage = () => {
                                 <Button className="w-full" type="submit" disabled>Update Profile</Button>
                             </div>
                             <div className="mt-3">
-                                <div className="bg-red-500 text-center w-full py-2 rounded-sm">
-                                    <LogoutBtn/>
-                                </div>
+                                <LogoutBtn/>
                             </div>
                         </form>
                     </>

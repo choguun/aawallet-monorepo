@@ -27,5 +27,5 @@ export function LogoutBtn() {
     }
   };
  
-  return <button onClick={logout}>Logout</button>;
+  return <button onClick={logout} className="bg-red-500 text-center w-full py-2 rounded-sm">Logout</button>;
 }

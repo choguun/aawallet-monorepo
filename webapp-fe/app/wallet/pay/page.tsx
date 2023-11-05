@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 const WalletPayPage = () => {
     const [QRData, setQRData] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [toAddress, setToAddress] = useState('');
+    const [amount, setAmount] = useState(0);
 
     const webcamRef = useRef<Webcam>(null);
 
@@ -53,6 +55,10 @@ const WalletPayPage = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [QRData]);
 
+    const handleInputtoAddress = (event : any) => {
+      setToAddress(event.target.value);
+    }
+
   return (
     <div className="bg-gray-200 w-[600px]">
         <div className="bg-black text-center p-4">
@@ -70,6 +76,10 @@ const WalletPayPage = () => {
                 videoConstraints={videoConstraints}
               >
               </Webcam> */}
+              <span>Avaliable Balance:</span>
+              {/* <span>{availiableBalance}</span> */}
+              <input placeholder="address" type="text" value={toAddress} onChange={handleInputtoAddress} className="w-full border border-black"></input>
+              <input placeholder="amount" type="number" value={amount} className="w-full border border-black"></input>
           </div>
         </div>
         <div className="p-6">

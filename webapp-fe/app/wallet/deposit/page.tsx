@@ -4,19 +4,18 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { supplyAave } from '@/lib/store';
-import Cookies from 'js-cookie';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import erc20Abi from '@/assets/abis/erc20.abi.json';
 import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
-
+import { getAccount } from '@/lib/service';
 
 const DepositPage = () => {
     const router = useRouter();
 
-    const [token, setToken] = useState<string>('');
+    // const [token, setToken] = useState<string>('');
     const [account, setAccount] = useState<any>({});
     const [amount, setAmount] = useState<number>(0);
     const [cryptoWalletAddress, setCryptoWalletAddress] = useState<string>('');
@@ -42,20 +41,18 @@ const DepositPage = () => {
         setAmount(event.target.value);
     };
 
-    useEffect(() => {
-        const token = Cookies.get("hanko");
-        if (token) {
-            setToken(token);
-        }
-      }, []);
+    // useEffect(() => {
+    //     const token = Cookies.get("hanko");
+    //     if (token) {
+    //         setToken(token);
+    //     }
+    //   }, []);
 
       useEffect(() => {
-        const getAccount = async () => {
+        const getAccountData = async () => {
             try {
-                const response = await axios.get<any>("/api/get-account", { headers: { Authorization: `Bearer ${token}` }});
+                const data = await getAccount();
                 
-                const data = response.data;
-
                 let account = {
                     crypto_wallet_address :  data.crypto_wallet_address,
                     saving_wallet_address : data.saving_wallet_address,
@@ -70,10 +67,10 @@ const DepositPage = () => {
                 router.push('/login');
             }
         }
-        if(token.length > 0) {
-            getAccount();
-        }
-      }, [token])
+        //if(token.length > 0) {
+            getAccountData();
+        //}
+      }, [])
 
       const USDCToken = '0x52D800ca262522580CeBAD275395ca6e7598C014';
       useEffect(() => {

@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button';
-import { Hanko } from '@teamhanko/hanko-elements';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { createAccount } from '@/lib/service';
+import { createAccount, getHakoProfile } from '@/lib/service';
 import toast from 'react-hot-toast';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
 
 
@@ -21,13 +20,13 @@ const schema = yup
 })
 .required();
 
-const hankoApi = process.env.NEXT_PUBLIC_HANKO_API_URL!;
-
 const OnboardingPage = () => {
+    if(typeof document !== 'undefined') {
+        // you are safe to use the "document" object here
+        console.log(document.location.href);
+    }
     const router = useRouter();
-    const hanko = new Hanko(hankoApi);
 
-    const [token, setToken] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const {
@@ -39,11 +38,11 @@ const OnboardingPage = () => {
         resolver: yupResolver(schema)
       });
 
-      const { isSubmitting } = formState;
+    const { isSubmitting } = formState;
 
     const onSubmit: SubmitHandler<any> = async (data : any) => {
         try {
-            await createAccount(data, token);
+            await createAccount(data);
             router.push(`/wallet`);
         } catch(error : any) {
             console.error(error);
@@ -51,16 +50,10 @@ const OnboardingPage = () => {
         }
     }
    
-    useEffect(() => {
-        const token = Cookies.get("hanko");
-        if (token) {
-            setToken(token);
-        }
-    }, []);
-   
+
     useEffect(() => { 
         const getAccount = async () => {
-            const {id, email} = await hanko.user.getCurrent();
+            const {id, email} = await getHakoProfile();
             // console.log(`user-id: ${id}, email: ${email}`);
         
             setValue('uid', id);
@@ -106,7 +99,7 @@ const OnboardingPage = () => {
                         <input className="w-full rounded-md border border-black p-1" type="password" maxLength={6}></input>
                     </div>
                     <div className="mt-3">
-                        <Button className="w-full" type="submit" onClick={()=> onSubmit} disabled={token.length === 0}>Create Account</Button>
+                        <Button className="w-full" type="submit" disabled={!isLoading}>Create Account</Button>
                     </div>
                 </div>
              </form>
