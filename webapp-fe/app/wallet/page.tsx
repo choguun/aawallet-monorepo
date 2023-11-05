@@ -172,7 +172,7 @@ const WalletPage = () => {
                                     <Skeleton className="float-right" width={'75%'} count={1} />
                                     ) : (
                                     <>
-                                    <span className="text-white text-md">{data?.wallet_name}</span>
+                                        <span className="text-white text-md">{data?.wallet_name}</span>
                                     </>
                                 )}
                                 <CopyToClipboard onCopy={onCopy} text={savingWalletAddress}>
@@ -192,7 +192,7 @@ const WalletPage = () => {
                                     <Skeleton className="float-right" width={'75%'} count={1} />
                                     ) : (
                                     <>
-                                    <span className="text-white font-semibold text-2xl md:text-3xl">{savingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
+                                    <span className="text-white font-semibold text-2xl md:text-2xl">{savingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
                                     <br className="md:hidden" />
                                     <span className="hidden md:inline-block">&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                     <span className="text-green-500 text-xs md:text-base"> APY : {APY.toLocaleString(undefined, {minimumFractionDigits: 2})} %</span>
@@ -230,18 +230,18 @@ const WalletPage = () => {
                         </span>
                     </div>
                     <div>
-                        <div className="w-1/2 md:w-1/4 inline-block">
+                        <div className="w-1/4 md:w-1/4 inline-block">
                                 <span className="text-white font-semibold text-2xl md:text-3xl">
                                     Balance:
                                 </span>  
                         </div>
-                        <div className="w-1/2 md:w-3/4 inline-block">
+                        <div className="w-3/4 md:w-3/4 inline-block">
                             {
                             isLoading ? (
                                 <Skeleton className="float-right" width={'75%'} count={1} />
                                 ) : (
                                 <>
-                                <span className="text-white font-semibold text-2xl md:text-3xl">{cryptoBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
+                                <span className="text-white font-semibold text-2xl md:text-2xl">{cryptoBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
                                 </>
                             )}
                         </div>
@@ -254,7 +254,7 @@ const WalletPage = () => {
                     </div>
                     <div className="w-full bg-gray-200 cursor-pointer mt-10 text-center">
                         <span className="text-black text-md inline-block p-4 w-1/2 text-center mx-auto" onClick={() => router.push('/wallet/deposit')}>
-                            Deposit to Saving Account
+                            Deposit to Saving
                         </span>
                     </div>
                 </div>

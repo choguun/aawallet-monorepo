@@ -96,7 +96,7 @@ const AccountPage = () => {
 
     return (
         <div>
-            <div className="bg-gray-200 min-h-screen w-[600px] p-6">
+            <div className="bg-gray-200 min-h-screen w-screen md:w-[600px] p-6">
                 <div className="mb-3 text-center">
                     <span className="text-2xl font-semibold">Account Profile</span>
                 </div>
