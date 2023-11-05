@@ -62,6 +62,16 @@ const Index = () => {
   -Integrate with RWA<br/>
         </div>
       </div>
+      <div className="mt-1 mb-3 px-6">
+        <span className="text-md font-semibold text-black">
+          Pitch Deck: 
+        </span>
+        <Link target="_blank" href={'https://drive.google.com/file/d/18GtINykr9XI_jAePQgtPN_moV0IwrXjZ/view?usp=sharing'}>
+          <span className="ml-3 text-md font-bold text-black cursor-pointer">
+            Link
+          </span>
+        </Link>
+      </div>
       <footer className="bg-black">
         <div className="p-4">
           <div className="mt-3">

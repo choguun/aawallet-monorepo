@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NavBar } from '@/components/NavBar';
 import { getAccount } from '@/lib/service';
+import ReactLoading from 'react-loading';
 
 const HistoryPage = () => {
     const router = useRouter();
@@ -11,7 +12,7 @@ const HistoryPage = () => {
     const [account, setAccount] = useState<any>({});
     const [savingWalletAddress, setSavingWalletAddress] = useState<string>('');
     const [cryptoWalletAddress, setCryptoWalletAddress] = useState<string>('');
-
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const getAccountData = async () => {
@@ -28,6 +29,7 @@ const HistoryPage = () => {
                 setAccount(account);
                 setSavingWalletAddress(data.saving_wallet_address);
                 setCryptoWalletAddress(data.saving_wallet_address);
+                setLoading(false);
             } catch(error : any) {
                 console.error(error);
                 router.push('/login');
@@ -40,6 +42,9 @@ const HistoryPage = () => {
 
     return (
         <div className="bg-gray-200 w-[600px]">
+              { loading &&
+                 <ReactLoading className="absolute top-1/3 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
+            }
             <div className="mt-3 mb-3 text-center">
                 <span className="text-2xl font-semibold">History</span>
             </div>
