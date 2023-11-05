@@ -1,0 +1,10 @@
+{
+  "rpcUrl": "https://api.stackup.sh/v1/node/<apikey>",
+  "signingKey": "",
+  "paymaster": {
+    "rpcUrl": "https://api.stackup.sh/v1/paymaster/<apikey>",
+    "context": {}
+  },
+  "factory": ""
+}
+
