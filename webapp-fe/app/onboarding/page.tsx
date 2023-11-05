@@ -1,6 +1,6 @@
 "use client";
 
-import { Hanko } from "@teamhanko/hanko-elements";
+import { Hanko } from "@teamhanko/hanko-frontend-sdk"
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button';

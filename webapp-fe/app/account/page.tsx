@@ -14,7 +14,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { useQuery } from '@tanstack/react-query';
 import { getAccount } from '@/lib/service';
 import { LogoutBtn } from '@/components/LogoutButton';
-import { useHakoProfile } from '@/components/hanko-provider';
 
 const schema = yup
 .object({
