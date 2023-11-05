@@ -131,8 +131,10 @@ const WalletPage = () => {
         retry: 1,
     });
 
+    const error2: any = error;
+
     if(isError) {
-        if(error?.response?.data === "Not Found")
+        if(error2?.response?.data === "Not Found")
             router.push('/onboarding');
     }
 
