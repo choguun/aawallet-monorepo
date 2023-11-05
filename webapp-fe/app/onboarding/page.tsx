@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+import { Hanko } from "@teamhanko/hanko-elements";
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button';
@@ -7,11 +8,11 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { createAccount, getAccount } from '@/lib/service';
-import { useHakoProfile } from '@/components/hanko-provider';
 import toast from 'react-hot-toast';
 // import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
 
+const hankoApi = process.env.NEXT_PUBLIC_HANKO_API_URL!;
 
 const schema = yup
 .object({
@@ -55,8 +56,9 @@ const OnboardingPage = () => {
 
     useEffect(() => { 
         const getAccount = async () => {
-            let id = '', email = '';
-         
+            const hanko = new Hanko(hankoApi);
+
+            const {id, email} = await hanko.user.getCurrent();
             // console.log(`user-id: ${id}, email: ${email}`);
         
             setValue('uid', id);
