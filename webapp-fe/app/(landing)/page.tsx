@@ -27,7 +27,7 @@ const Index = () => {
           </p>
           <br/>
           <Link href={'/login'}>
-            <Button>Get Start</Button>
+            <Button>Get Started</Button>
           </Link>
         </div>
         <div className="mt-8">

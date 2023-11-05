@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { createAccount, getHakoProfile } from '@/lib/service';
+import { createAccount, getAccount, getHakoProfile } from '@/lib/service';
 import toast from 'react-hot-toast';
 // import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
@@ -68,10 +68,22 @@ const OnboardingPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        const getAccountData = async () => {
+            try {
+                await getAccount();
+                router.push('/wallet');
+            } catch(error :any) {
+                // console.error(error);
+            }
+        };
+        getAccountData();
+    }, []);
+
     return (
         <div className="bg-gray-200 w-[600px] p-6">
              { (isLoading || isSubmitting) &&
-                <ReactLoading className="absolute top-1/3 left-1/3 z-50" type="spin" height={100} width={100} color="grey" />
+                <ReactLoading className="absolute top-1/3 md:top-1/2 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
             }
             <div className="mb-3 text-center">
                 <span className="text-2xl font-semibold">Create Account</span>
@@ -99,7 +111,7 @@ const OnboardingPage = () => {
                         <input className="w-full rounded-md border border-black p-1" type="password" maxLength={6}></input>
                     </div>
                     <div className="mt-3">
-                        <Button className="w-full" type="submit" disabled={!isLoading}>Create Account</Button>
+                        <Button className="w-full" type="submit" disabled={isLoading}>Create Account</Button>
                     </div>
                 </div>
              </form>

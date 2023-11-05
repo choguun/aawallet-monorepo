@@ -24,7 +24,7 @@ export const TokenList = (props: any) => {
                         </div>
                         <div className="inline-block float-right">
                             <span>${Number(token.balance).toLocaleString(undefined, {minimumFractionDigits: 2})}</span><br/>
-                            <span>{Number(token.amount).toLocaleString(undefined, {minimumFractionDigits: 2})} {token.name}</span>
+                            <span>{Number(token.amount).toLocaleString(undefined, {minimumFractionDigits: 2})} {token.name === 'ethereum' ? 'eth ' : token.name}</span>
                         </div>
                     </div>
                     )
