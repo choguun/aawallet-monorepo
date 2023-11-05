@@ -14,7 +14,7 @@ datasource db {
 model Account {
   id                        String       @default(cuid()) @id
   uid                       String       @unique
-  email                     String       @unique
+  // email                     String       @unique
   wallet_name               String?
   crypto_wallet_address     String?      @unique
   saving_wallet_address     String?      @unique

@@ -71,7 +71,7 @@ export async function POST(
    await prisma.account.create({
         data: {
           uid: uid,
-          email: email,
+          // email: email,
           wallet_name: wallet_name,
           crypto_wallet_address: crypto_wallet_address,
           crypto_wallet_salt: crypto_wallet_salt,

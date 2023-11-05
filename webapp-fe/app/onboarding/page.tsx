@@ -1,32 +1,25 @@
 "use client";
 
-import { Hanko } from "@teamhanko/hanko-frontend-sdk"
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { createAccount, getAccount } from '@/lib/service';
+import { createAccount, getAccount, getUid } from '@/lib/service';
 import toast from 'react-hot-toast';
 // import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
 
-const hankoApi = process.env.NEXT_PUBLIC_HANKO_API_URL!;
 
 const schema = yup
 .object({
   uid: yup.string().required(),
-  email: yup.string().required(),
   wallet_name: yup.string().required()
 })
 .required();
 
 const OnboardingPage = () => {
-    if(typeof document !== 'undefined') {
-        // you are safe to use the "document" object here
-        console.log(document.location.href);
-    }
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -56,13 +49,14 @@ const OnboardingPage = () => {
 
     useEffect(() => { 
         const getAccount = async () => {
-            const hanko = new Hanko(hankoApi);
+            //const hanko = new Hanko(hankoApi);
+            const id = await getUid();
 
-            const {id, email} = await hanko.user.getCurrent();
+            //const {id, email} = await hanko.user.getCurrent();
             // console.log(`user-id: ${id}, email: ${email}`);
         
             setValue('uid', id);
-            setValue('email', email);
+            // setValue('email', email);
             setIsLoading(false);
         };
         try {
@@ -99,10 +93,10 @@ const OnboardingPage = () => {
                         <span className="font-semibold">UID: </span>
                         <input className="w-full rounded-md border border-black p-1" {...register("uid", { required: true })} disabled></input>
                     </div>
-                    <div className="mt-3">
+                    {/* <div className="mt-3">
                         <span className="font-semibold">Email: </span>
                         <input className="w-full rounded-md border border-black p-1" {...register("email", { required: true })} disabled></input>
-                    </div>
+                    </div> */}
                     <div className="mt-3">
                         <span className="font-semibold">Account Name: </span>
                         <input className="w-full rounded-md border border-black p-1" {...register("wallet_name", { required: true })}></input>

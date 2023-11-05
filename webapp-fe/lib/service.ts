@@ -2,6 +2,19 @@
 
 import axios from 'axios';
 import Cookies from "js-cookie";
+import jsonwebtoken, { Jwt } from 'jsonwebtoken';
+
+
+export async function getUid() {
+        const token = Cookies.get("hanko") ?? '';
+        // console.log(token);
+        const decodedToken = await jsonwebtoken.decode(token, { complete: true });
+
+        // console.log(decodedToken);
+
+        return decodedToken?.payload?.sub as string;
+}
+
 
 export async function createAccount(data : any) {
     try {
@@ -15,7 +28,6 @@ export async function createAccount(data : any) {
         throw error;
     }
 }
-
 
 export async function updateAccount(data: any) {
     try {

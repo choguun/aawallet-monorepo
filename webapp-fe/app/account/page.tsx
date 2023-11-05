@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { updateAccount } from '@/lib/service';
+import { updateAccount, getUid } from '@/lib/service';
 import toast from 'react-hot-toast';
 import { NavBar } from '@/components/NavBar';
 import Skeleton from 'react-loading-skeleton'
@@ -60,14 +60,15 @@ const AccountPage = () => {
 
     useEffect(() => { 
         const getAccount = async () => {
+            const id = await getUid();
             // const {id, email} = await useHakoProfile();
-            let id = '', email = '';
+            //let id = '', email = '';
             // console.log(`user-id: ${id}, email: ${email}`);
         
-            setEmail(email);
+            //setEmail(email);
             setUid(id);
             setValue('uid', id);
-            setValue('email', email);
+            //setValue('email', email);
         };
 
         getAccount();
@@ -98,10 +99,10 @@ const AccountPage = () => {
                                 <span className="font-semibold">UID: </span>
                                 <input className="w-full rounded-md border border-black p-1" {...register("uid", { required: true })} disabled></input>
                             </div>
-                            <div className="mt-3">
+                            {/* <div className="mt-3">
                                 <span className="font-semibold">Email: </span>
                                 <input className="w-full rounded-md border border-black p-1" {...register("email", { required: true })} disabled></input>
-                            </div>
+                            </div> */}
                             <div className="mt-3">
                                 <span className="font-semibold">Account Name: </span>
                                 <input className="w-full rounded-md border border-black p-1" value={data?.wallet_name} disabled></input>
