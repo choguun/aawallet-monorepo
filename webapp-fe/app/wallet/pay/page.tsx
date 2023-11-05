@@ -61,7 +61,7 @@ const WalletPayPage = () => {
         </div>
         <div className="p-6">
           <div className="mt-3">
-            <Webcam
+            {/* <Webcam
                 audio={false}
                 ref={webcamRef}
                 style={{ width: '100%'}}
@@ -69,7 +69,7 @@ const WalletPayPage = () => {
                 screenshotQuality={0.85}
                 videoConstraints={videoConstraints}
               >
-              </Webcam>
+              </Webcam> */}
           </div>
         </div>
         <div className="p-6">

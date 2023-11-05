@@ -4,12 +4,13 @@ import Image from 'next/image';
 
 export const TokenList = (props: any) => {
     const {tokens} = props;
-    //console.log(tokens);
+    console.log(tokens);
     return (
         <>
-           <div>
+           <div className="mb-10">
                 {tokens.map((token: any) => {
-                    <div className="border-b border-bg-black">
+                    return(
+                    <div key={token.name} className="border-b p-2 border-black">
                         <div className="inline-block">
                             <Image src={token.logo} width={30} height={30} alt="" />
                         </div>
@@ -18,14 +19,15 @@ export const TokenList = (props: any) => {
                                 {token.name}
                             </span><br/>
                             <span>
-                                ${token.price}
+                                ${Number(token.price).toLocaleString(undefined, {minimumFractionDigits: 2})}
                             </span>
                         </div>
                         <div className="inline-block float-right">
-                            <span>${token.balance}</span><br/>
-                            <span>{token.amount} {token.name}</span>
+                            <span>${Number(token.balance).toLocaleString(undefined, {minimumFractionDigits: 2})}</span><br/>
+                            <span>{Number(token.amount).toLocaleString(undefined, {minimumFractionDigits: 2})} {token.name}</span>
                         </div>
                     </div>
+                    )
                 })}
             </div> 
         </>

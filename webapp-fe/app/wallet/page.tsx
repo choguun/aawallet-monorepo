@@ -100,9 +100,9 @@ const WalletPage = () => {
                 let tokenList = [];
 
                 tokenList.push({ name: "matic" , amount: nativeTokenAmount, balance: nativeTokenBalance, price: maticPrice, logo: 'https://assets.coingecko.com/coins/images/4713/standard/polygon.png' });
-                tokenList.push({ name: "ethereum" , amount: balanceWETH, balance: balanceWETH*ethereumPrice, price: ethereumPrice, logo: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png' });
-                tokenList.push({ name: "usdt" , amount: balanceUSDT, balance: Number(balanceUSDT/10**decimalsUSDT), price: 1, logo: 'https://assets.coingecko.com/coins/images/325/standard/Tether.png' });
-                tokenList.push({ name: "usdc" , amount: balanceUSDC, balance: Number(balanceUSDC/10**decimalsUSDC), price: 1, logo: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png' });
+                tokenList.push({ name: "ethereum" , amount: balanceWETH/10**decimalsWETH, balance: balanceWETH*ethereumPrice/10**decimalsWETH, price: ethereumPrice, logo: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png' });
+                tokenList.push({ name: "usdt" , amount: balanceUSDT/10**decimalsUSDT, balance: balanceUSDT/10**decimalsUSDT, price: 1, logo: 'https://assets.coingecko.com/coins/images/325/standard/Tether.png' });
+                tokenList.push({ name: "usdc" , amount: balanceUSDC/10**decimalsUSDC, balance: balanceUSDC/10**decimalsUSDC, price: 1, logo: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png' });
 
                 setTokenList(tokenList);
 
@@ -119,7 +119,7 @@ const WalletPage = () => {
             getCryptoBalance();
         }
 
-    }, [savingWalletAddress, provider]);
+    }, [savingWalletAddress]);
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: [token],
