@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 const jwksClient = require('jwks-rsa');
 const util = require('util');
 
-const JWKS_URI = 'https://5c4b82c1-7e45-4602-b4f0-62e314f4b03c.hanko.io/.well-known/jwks.json';
+const JWKS_URI = process.env.JWKS_URI!;
 
 const verifyAsync = util.promisify(jwt.verify);
 const jwksclient = jwksClient({
