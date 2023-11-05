@@ -73,41 +73,45 @@ const WalletPage = () => {
         };
 
         const getCryptoBalance = async () => {
+            try {
+                const priceData = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=matic-network%2Cethereum&vs_currencies=usd');
+                const maticPrice = priceData.data['matic-network'].usd;
+                const ethereumPrice = priceData.data.ethereum.usd;
 
-            const priceData = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=matic-network%2Cethereum&vs_currencies=usd');
-            const maticPrice = priceData.data['matic-network'].usd;
-            const ethereumPrice = priceData.data.ethereum.usd;
+                const balance = await provider.getBalance(cryptoWalletAddress);
+                const wei = ethers.BigNumber.from(balance);
+                const nativeTokenAmount = Number(ethers.utils.formatEther(wei));
+                const nativeTokenBalance = nativeTokenAmount * maticPrice;
+    
+                const erc20USDC = new ethers.Contract(USDCToken, erc20Abi, provider);
+                const erc20USDT = new ethers.Contract(USDTToken, erc20Abi, provider);
+                const erc20WETH = new ethers.Contract(WETHToken, erc20Abi, provider);
+                const [balanceUSDT, decimalsUSDT, balanceWETH, decimalsWETH, balanceUSDC, decimalsUSDC] = await Promise.all([
+                    erc20USDT.balanceOf(cryptoWalletAddress),
+                    erc20USDT.decimals(),
+                    erc20WETH.balanceOf(cryptoWalletAddress),
+                    erc20WETH.decimals(),
+                    erc20USDC.balanceOf(cryptoWalletAddress),
+                    erc20USDC.decimals(),
+                ]);
 
-            const balance = await provider.getBalance(cryptoWalletAddress);
-            const wei = ethers.BigNumber.from(balance);
-            const nativeTokenAmount = Number(ethers.utils.formatEther(wei));
-            const nativeTokenBalance = nativeTokenAmount * maticPrice;
- 
-            const erc20USDC = new ethers.Contract(USDCToken, erc20Abi, provider);
-            const erc20USDT = new ethers.Contract(USDTToken, erc20Abi, provider);
-            const erc20WETH = new ethers.Contract(WETHToken, erc20Abi, provider);
-            const [balanceUSDT, decimalsUSDT, balanceWETH, decimalsWETH, balanceUSDC, decimalsUSDC] = await Promise.all([
-                erc20USDT.balanceOf(cryptoWalletAddress),
-                erc20USDT.decimals(),
-                erc20WETH.balanceOf(cryptoWalletAddress),
-                erc20WETH.decimals(),
-                erc20USDC.balanceOf(cryptoWalletAddress),
-                erc20USDC.decimals(),
-            ]);
+                const totalBalance = Number(balanceUSDT/10**decimalsUSDT) + Number(balanceUSDC/10**decimalsUSDC) + Number(balanceWETH*ethereumPrice/10**decimalsWETH) + nativeTokenBalance;
+                    
+                let tokenList = [];
 
-            const totalBalance = Number(balanceUSDT/10**decimalsUSDT) + Number(balanceUSDC/10**decimalsUSDC) + Number(balanceWETH*ethereumPrice/10**decimalsWETH) + nativeTokenBalance;
-                
-            let tokenList = [];
+                tokenList.push({ name: "matic" , amount: nativeTokenAmount, balance: nativeTokenBalance, price: maticPrice, logo: 'https://assets.coingecko.com/coins/images/4713/standard/polygon.png' });
+                tokenList.push({ name: "ethereum" , amount: balanceWETH, balance: balanceWETH*ethereumPrice, price: ethereumPrice, logo: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png' });
+                tokenList.push({ name: "usdt" , amount: balanceUSDT, balance: Number(balanceUSDT/10**decimalsUSDT), price: 1, logo: 'https://assets.coingecko.com/coins/images/325/standard/Tether.png' });
+                tokenList.push({ name: "usdc" , amount: balanceUSDC, balance: Number(balanceUSDC/10**decimalsUSDC), price: 1, logo: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png' });
 
-            tokenList.push({ name: "matic" , amount: nativeTokenAmount, balance: nativeTokenBalance, price: maticPrice, logo: 'https://assets.coingecko.com/coins/images/4713/standard/polygon.png' });
-            tokenList.push({ name: "ethereum" , amount: balanceWETH, balance: balanceWETH*ethereumPrice, price: ethereumPrice, logo: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png' });
-            tokenList.push({ name: "usdt" , amount: balanceUSDT, balance: Number(balanceUSDT/10**decimalsUSDT), price: 1, logo: 'https://assets.coingecko.com/coins/images/325/standard/Tether.png' });
-            tokenList.push({ name: "usdc" , amount: balanceUSDC, balance: Number(balanceUSDC/10**decimalsUSDC), price: 1, logo: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png' });
+                setTokenList(tokenList);
 
-            setTokenList(tokenList);
-
-            setCryptoBalance(totalBalance);
-            setLoading2(false);
+                setCryptoBalance(totalBalance);
+                setLoading2(false);
+            } catch(error : any) {
+                console.error(error);
+                toast.error('Please wait 1-2 minute and refresh again. Exceed Coingecko API Limit');
+            }
         };
 
         if(savingWalletAddress.length > 0) {

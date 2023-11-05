@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
-import { PNG } from 'pngjs/browser';
 import jsQR from 'jsqr';
 import { Buffer } from 'buffer';
 import { useRouter } from 'next/navigation';
@@ -20,11 +19,11 @@ const WalletPayPage = () => {
         const imageSrc = webcamRef.current?.getScreenshot(); // add null check
         if (imageSrc) {
             const imageBuffer = Buffer.from(imageSrc.slice('data:image/png;base64,'.length), 'base64');
-            const png = PNG.sync.read(imageBuffer);
-            const imageData = jsQR(Uint8ClampedArray.from(png.data), png.width, png.height);
-            if (imageData) {
-                setQRData(imageData.data);
-            }
+            // const png = PNG.sync.read(imageBuffer);
+            // const imageData = jsQR(Uint8ClampedArray.from(png.data), png.width, png.height);
+            // if (imageData) {
+            //     setQRData(imageData.data);
+            // }
         }
     };
 
