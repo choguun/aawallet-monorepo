@@ -61,7 +61,7 @@ export async function POST(
     }
 
     // key service
-    const result = await axios.get('http://18.138.254.77:3000/key');
+    const result = await axios.get(process.env.NEXT_PUBLIC_KEY_API_ENDPOINT!);
 
     const crypto_wallet_salt = result.data.crypto_wallet_salt;
     const crypto_wallet_address = result.data.crypto_wallet_address;
