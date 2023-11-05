@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { updateAccount, getHakoProfile } from '@/lib/service';
+import { updateAccount } from '@/lib/service';
 import toast from 'react-hot-toast';
 import { NavBar } from '@/components/NavBar';
 import Skeleton from 'react-loading-skeleton'
@@ -14,6 +14,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { useQuery } from '@tanstack/react-query';
 import { getAccount } from '@/lib/service';
 import { LogoutBtn } from '@/components/LogoutButton';
+import { useHakoProfile } from '@/components/hanko-provider';
 
 const schema = yup
 .object({
@@ -57,11 +58,12 @@ const AccountPage = () => {
         }
     }
 
-   
+
     useEffect(() => { 
         const getAccount = async () => {
-            const {id, email} = await getHakoProfile();
-            console.log(`user-id: ${id}, email: ${email}`);
+            // const {id, email} = await useHakoProfile();
+            let id = '', email = '';
+            // console.log(`user-id: ${id}, email: ${email}`);
         
             setEmail(email);
             setUid(id);

@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { createAccount, getAccount, getHakoProfile } from '@/lib/service';
+import { createAccount, getAccount } from '@/lib/service';
+import { useHakoProfile } from '@/components/hanko-provider';
 import toast from 'react-hot-toast';
 // import Cookies from 'js-cookie';
 import ReactLoading from 'react-loading';
@@ -50,10 +51,12 @@ const OnboardingPage = () => {
         }
     }
    
+    // const {id, email} = useHakoProfile();
 
     useEffect(() => { 
         const getAccount = async () => {
-            const {id, email} = await getHakoProfile();
+            let id = '', email = '';
+         
             // console.log(`user-id: ${id}, email: ${email}`);
         
             setValue('uid', id);

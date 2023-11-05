@@ -2,16 +2,6 @@
 
 import axios from 'axios';
 import Cookies from "js-cookie";
-import { Hanko } from '@teamhanko/hanko-elements';
-
-const hankoApi = process.env.NEXT_PUBLIC_HANKO_API_URL!;
-
-export async function getHakoProfile() {
-    const hanko = new Hanko(hankoApi);
-    const {id, email} = await hanko.user.getCurrent();
-
-    return {id, email};
-}
 
 export async function createAccount(data : any) {
     try {
