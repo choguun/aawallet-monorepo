@@ -153,6 +153,14 @@ const WalletPage = () => {
                  <ReactLoading className="absolute top-1/3 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
             }
             <div className="px-4 py-1">
+                {
+                isLoading ? (
+                    <Skeleton className="float-right" width={'75%'} count={1} />
+                    ) : (
+                    <>
+                        <span className="text-black text-xl float-left pl-2">Hello, {data?.wallet_name}</span>
+                    </>
+                )}
                 <span className="float-right text-sm">on Mumbai Testnet</span>
             </div>
             <div className="p-6">
@@ -162,18 +170,10 @@ const WalletPage = () => {
                         <div className="mb-3">
                             <div className="w-1/2 md:w-1/4 inline-block top-0">
                                 <span className="text-white text-md top-0">
-                                    Saving Account:
+                                    Saving Account
                                 </span>  
                             </div>
                             <div className="w-1/2 md:w-3/4 inline-block">
-                                {
-                                isLoading ? (
-                                    <Skeleton className="float-right" width={'75%'} count={1} />
-                                    ) : (
-                                    <>
-                                        <span className="text-white text-md float-right md:float-left">{data?.wallet_name}</span>
-                                    </>
-                                )}
                                 <CopyToClipboard onCopy={onCopy} text={savingWalletAddress}>
                                     <span className="text-white float-right text-xs cursor-pointer underline">Copy Wallet Address</span>
                                 </CopyToClipboard>
