@@ -74,3 +74,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+.react-tabs {
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+}
+
+.react-tabs__tab-list {
+  margin: 0 0 15px;
+  padding: 0;
+  width: 100%;
+}
+
+.react-tabs__tab {
+  display: inline-block!important;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 700;
+  width: calc(100% / 2);
+  padding: 15px;
+  border-bottom: 2.5px solid #aaa;
+  color: grey;
+}
+
+.react-tabs__tab--selected {
+  border-bottom: 2.5px solid black;
+  color: black;
+}

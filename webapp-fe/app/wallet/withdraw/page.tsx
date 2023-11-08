@@ -68,7 +68,7 @@ const WithdrawPage = () => {
         // if(token.length > 0) {
           getAccountData();
         // }
-      }, [])
+      }, []);
 
       const aUSDCToken = '0x4086fabeE92a080002eeBA1220B9025a27a40A49';
 

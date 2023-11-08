@@ -24,6 +24,15 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang="en">
+        <head>
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icon.png"></link>
+          <meta name="theme-color" content="#fff" />
+          <title>
+            Unify Wallet : AA Wallet secure and simplify your crypto life.
+          </title>
+          <link rel="icon" type="image/x-icon" href="./icon.png"></link>
+        </head>
         <body className={font.className}>
           <ToasterProvider />
           {children}

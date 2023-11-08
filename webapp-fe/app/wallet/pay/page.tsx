@@ -13,11 +13,13 @@ import erc20Abi from '@/assets/abis/erc20.abi.json';
 import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
 import { getAccount } from '@/lib/service';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
+import QRCode from 'react-qr-code';
+import { PNG } from 'pngjs';
 
 const WalletPayPage = () => {
     const [account, setAccount] = useState<any>({});
     const [QRData, setQRData] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
     const [toAddress, setToAddress] = useState('');
     const [amount, setAmount] = useState(0);
     const [savingWalletAddress, setSavingWalletAddress] = useState<string>('');
@@ -46,11 +48,11 @@ const WalletPayPage = () => {
         const imageSrc = webcamRef.current?.getScreenshot(); // add null check
         if (imageSrc) {
             const imageBuffer = Buffer.from(imageSrc.slice('data:image/png;base64,'.length), 'base64');
-            // const png = PNG.sync.read(imageBuffer);
-            // const imageData = jsQR(Uint8ClampedArray.from(png.data), png.width, png.height);
-            // if (imageData) {
-            //     setQRData(imageData.data);
-            // }
+            const png = PNG.sync.read(imageBuffer);
+            const imageData = jsQR(Uint8ClampedArray.from(png.data), png.width, png.height);
+            if (imageData) {
+                setQRData(imageData.data);
+            }
         }
     };
 
@@ -73,9 +75,10 @@ const WalletPayPage = () => {
 
     useEffect(() => {
         if (QRData !== '' && validateQRData(QRData)) {
-          setIsOpen(true);
+          setToAddress(QRData);
+          // setIsOpen(true);
         } else {
-          setIsOpen(false);
+          // setIsOpen(false);
         }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [QRData]);
@@ -135,35 +138,88 @@ const WalletPayPage = () => {
 
   }, [savingWalletAddress]);
 
+  const [walletAddress, setWalletAddress] = useState('0x0000000000000000000000000000000000000000');
+  // const [token, setToken] = useState<string>('');
+
+  // useEffect(() => {
+  //     const token = Cookies.get("hanko");
+  //     if (token) {
+  //         setToken(token);
+  //     }
+  //   }, []);
+
+  const { data, isLoading, isError } = useQuery({
+      queryKey: [walletAddress],
+      queryFn: async () => {
+        const data = await getAccount();
+        setWalletAddress(data.saving_wallet_address);
+
+        return data;
+      },
+      retry: 1,
+  });
+
   return (
-    <div className="bg-gray-200 w-[600px]">
+    <div className="bg-gray-200 w-screen md:w-[600px]">
          { loading &&
                  <ReactLoading className="absolute top-1/3 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
             }
-        <div className="bg-black text-center p-4">
+        {/* <div className="bg-black text-center p-4">
             <span className="text-white inline-block float-left text-2xl font-semibold cursor-pointer" onClick={() => router.push('/wallet')}>{'<'}</span>
             <span className="text-white inline-block text-xl font-semibold">Pay</span>
+        </div> */}
+        <Tabs style={{"width": "100%"}}>
+        <TabList style={{"width": "100%"}}>
+          <Tab>MY QR</Tab>
+          <Tab>SCAN QR</Tab>
+        </TabList>
+        <TabPanel>
+        <div className="bg-gray-200 w-screen md:w-[600px]">
+            { !isLoading &&
+                <div>
+                    <div className="bg-black text-center p-4">
+                        <span className="text-white inline-block float-left text-2xl font-semibold cursor-pointer" onClick={() => router.push('/wallet')}>{'<'}</span>
+                        <span className="text-white inline-block text-xl font-semibold">MY QR</span>
+                    </div>
+                    <div className="p-6">
+                        <div className="mt-3">
+                            <QRCode className="w-full mx-auto" value={walletAddress} />
+                        </div>
+                        <div className="mt-3 text-center text-xl">
+                            <p className="break-words">{walletAddress}</p>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
+        </TabPanel>
+        <TabPanel>
+          { !isLoading &&
+              <div>
+                  <div className="bg-black text-center p-4">
+                      <span className="text-white inline-block float-left text-2xl font-semibold cursor-pointer" onClick={() => router.push('/wallet')}>{'<'}</span>
+                      <span className="text-white inline-block text-xl font-semibold">SCAN QR</span>
+                  </div>
+              <Webcam
+                  audio={false}
+                  ref={webcamRef}
+                  style={{ width: '100%'}}
+                  screenshotFormat="image/png"
+                  screenshotQuality={0.85}
+                  videoConstraints={videoConstraints}
+              />
+              </div>
+          }
+        </TabPanel>
+      </Tabs>
         <div className="p-6">
           <div className="mt-3">
-            {/* <Webcam
-                audio={false}
-                ref={webcamRef}
-                style={{ width: '100%'}}
-                screenshotFormat="image/png"
-                screenshotQuality={0.85}
-                videoConstraints={videoConstraints}
-              >
-              </Webcam> */}
               <span>Avaliable Balance:</span>
               <span>{usdCBalance}</span>
               <input placeholder="address" type="text" value={toAddress} onChange={handleInputtoAddress} className="w-full border border-black mt-2 p-1"></input>
               <input placeholder="amount" type="number" value={amount} onChange={handleInputAmount} className="w-full border border-black mt-2 p-1"></input>
               <Button className="w-full mt-3" onClick={() => transferTo()}>Pay/ Transfer</Button>
           </div>
-        </div>
-        <div className="p-6 bottom-0">
-          <Button className="w-full" onClick={()=> router.push('/wallet/receive')}>Show MY QR</Button>
         </div>
     </div>
   )

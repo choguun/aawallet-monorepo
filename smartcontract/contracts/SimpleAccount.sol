@@ -106,7 +106,6 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
         // if(savingsAccount != address(0) && msg.value > savingsThreshold){
         //     savingsAccount.transfer(((msg.value * savingsPercentage) / 100));
         // }
-        // TODO : automaticlly zap native token to USDC.
         //if(checkUSDCBalance() > 0) {
             //_supply();
         //}
@@ -123,12 +122,9 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     function _supply() internal {
         // 1. Set amountToDrain to the contract's supplyTokenAddress balance
         uint amountToDrain = IERC20(USDCTokenAddress).balanceOf(address(this));
-
         require(amountToDrain > 0, "USDC balance is zero");
-
         // 2. Approve Aave pool to access amountToDrain from this contract 
         IERC20(USDCTokenAddress).approve(aavePoolAddress, amountToDrain);
-
         // 3. Supply amountToDrain to Aave pool
         IPool(aavePoolAddress).supply(USDCTokenAddress, amountToDrain, address(this), 0);
     }
@@ -136,6 +132,15 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     function supply() external {
         // _requireFromEntryPointOrOwner(); 
         _supply();
+    }
+
+    function _zap() internal {
+        
+    }
+
+    function zap() external {
+         // _requireFromEntryPointOrOwner(); 
+        _zap();
     }
 
     function stake(uint amount) public {
@@ -160,7 +165,7 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     }
 
     function investInPendle() public {
-
+        
     }
 
     constructor(IEntryPoint anEntryPoint) {
