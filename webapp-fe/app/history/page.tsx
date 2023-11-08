@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { NavBar } from '@/components/NavBar';
 import { getAccount } from '@/lib/service';
 import ReactLoading from 'react-loading';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 
 const HistoryPage = () => {
     const router = useRouter();
@@ -42,7 +43,7 @@ const HistoryPage = () => {
 
     return (
         <div className="bg-gray-200 w-[600px]">
-              { loading &&
+              {/* { loading &&
                  <ReactLoading className="absolute top-1/3 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
             }
             <div className="mt-3 mb-3 text-center">
@@ -53,7 +54,37 @@ const HistoryPage = () => {
                 <span className="underline mb-5"><a href={`https://mumbai.polygonscan.com/address/${savingWalletAddress}`} target="_blank">Explorer</a></span><br/><br/>
                 <span className="text-xl font-semibold mt-5">Crypto Wallet</span><br/>
                 <span className="underline"><a href={`https://mumbai.polygonscan.com/address/${cryptoWalletAddress}`} target="_blank">Explorer</a></span>
-            </div>
+            </div> */}
+              <div className="bg-gray-200 w-screen md:w-[600px]">
+         { loading &&
+                 <ReactLoading className="absolute top-1/3 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
+            }
+            <div className="mt-3 mb-3 text-center">
+                    <span className="text-2xl font-semibold">History</span>
+                </div>
+        <Tabs style={{"width": "100%"}}>
+        <TabList style={{"width": "100%"}}>
+          <Tab>Saving Account</Tab>
+          <Tab>Crypto Wallet</Tab>
+        </TabList>
+        <TabPanel>
+        <div className="bg-gray-200 w-screen md:w-[600px]">
+            { !loading &&
+                <div>
+                 <span className="underline pl-5"><a href={`https://mumbai.polygonscan.com/address/${savingWalletAddress}`} target="_blank">Explorer</a></span><br/><br/>
+                </div>
+            }
+        </div>
+        </TabPanel>
+        <TabPanel>
+          { !loading &&
+              <div>
+                 <span className="underline pl-5"><a href={`https://mumbai.polygonscan.com/address/${cryptoWalletAddress}`} target="_blank">Explorer</a></span>
+              </div>
+          }
+        </TabPanel>
+      </Tabs>
+        </div>
             {/* Bottom Navbar */}
             <NavBar path={'/history'} />
         </div>
