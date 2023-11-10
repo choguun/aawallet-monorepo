@@ -14,6 +14,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { useQuery } from '@tanstack/react-query';
 import { getAccount } from '@/lib/service';
 import { LogoutBtn } from '@/components/LogoutButton';
+import Link from 'next/link';
 
 const schema = yup
 .object({
@@ -85,10 +86,10 @@ const AccountPage = () => {
 
     return (
         <div>
-            <div className="bg-gray-200 min-h-screen w-screen md:w-[600px] p-6">
-                <div className="mb-3 text-center">
-                    <span className="text-2xl font-semibold">Account Profile</span>
+                <div className="bg-black text-center p-4">
+                    <span className="text-white inline-block text-xl font-semibold">Account</span>
                 </div>
+            <div className="bg-gray-200 min-h-screen w-screen md:w-[600px] p-6">
                 {
                 isLoading ? (
                     <Skeleton count={8} />
@@ -119,6 +120,11 @@ const AccountPage = () => {
                                 <Button className="w-full" type="submit" disabled>Update Profile</Button>
                             </div>
                             <div className="mt-3">
+                                <Link href="/history">
+                                    <Button className="w-full">History</Button>
+                                </Link>
+                            </div>
+                            <div className="mt-10 align-bottom">
                                 <LogoutBtn/>
                             </div>
                         </form>

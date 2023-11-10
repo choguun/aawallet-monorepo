@@ -18,8 +18,10 @@ model Account {
   wallet_name               String?
   crypto_wallet_address     String?      @unique
   saving_wallet_address     String?      @unique
+  invest_wallet_address     String?      @unique
   crypto_wallet_salt        Int          @unique
   saving_wallet_salt        Int          @unique
+  invest_wallet_salt        Int          @unique
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "accounts")

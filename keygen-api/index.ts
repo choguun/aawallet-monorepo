@@ -45,17 +45,31 @@ app.get('/key', async (req: any, res: any) => {
 		salt: salt+1
 	  }
   );
+
+  const simpleAccount3 = await Presets.Builder.SimpleAccount.init(
+    new ethers.Wallet(config.signingKey),
+    config.rpcUrl,
+    {
+      paymasterMiddleware,
+    entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
+    factory: config.factory,
+    salt: salt+2
+    }
+  );
   
   const saving_wallet_address = simpleAccount2.getSender();
-  const saving_wallet_salt = salt+1
+  const saving_wallet_salt = salt+1;
 
-  jsonData.salt = salt + 2;
+  const invest_wallet_address = simpleAccount3.getSender();
+  const invest_wallet_salt = salt+2;
+
+  jsonData.salt = salt + 3;
 
   const jsonString = JSON.stringify(jsonData);
 
   fs.writeFileSync('./salt.json', jsonString);
 
-  res.json({'crypto_wallet_salt': salt, 'crypto_wallet_address': crypto_wallet_address, 'saving_wallet_address': saving_wallet_address, 'saving_wallet_salt': saving_wallet_salt});
+  res.json({'crypto_wallet_salt': salt, 'crypto_wallet_address': crypto_wallet_address, 'saving_wallet_address': saving_wallet_address, 'saving_wallet_salt': saving_wallet_salt, 'invest_wallet_address': invest_wallet_address, 'invest_wallet_salt': invest_wallet_salt});
 });
 
 app.listen(3000, () => {

@@ -15,7 +15,8 @@ import ReactLoading from 'react-loading';
 const schema = yup
 .object({
   uid: yup.string().required(),
-  wallet_name: yup.string().required()
+  wallet_name: yup.string().required(),
+  daily_spending_limit: yup.number().positive().integer().required(),
 })
 .required();
 
@@ -102,13 +103,17 @@ const OnboardingPage = () => {
                         <input className="w-full rounded-md border border-black p-1" {...register("wallet_name", { required: true })}></input>
                     </div>
                     <div className="mt-3">
+                        <span className="font-semibold">Daily Spending Limit: </span>
+                        <input className="w-full rounded-md border border-black p-1" {...register("daily_spending_limit", { required: true })}></input>
+                    </div>
+                    {/* <div className="mt-3">
                         <span className="font-semibold">PIN: </span>
                         <input className="w-full rounded-md border border-black p-1" type="password" maxLength={6}></input>
                     </div>
                     <div className="mt-3">
                         <span className="font-semibold">Confirm PIN: </span>
                         <input className="w-full rounded-md border border-black p-1" type="password" maxLength={6}></input>
-                    </div>
+                    </div> */}
                     <div className="mt-3">
                         <Button className="w-full" type="submit" disabled={isLoading}>Create Account</Button>
                     </div>

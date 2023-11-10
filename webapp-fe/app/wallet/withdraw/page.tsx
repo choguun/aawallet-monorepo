@@ -10,6 +10,8 @@ import erc20Abi from '@/assets/abis/erc20.abi.json';
 import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
 import { getAccount } from '@/lib/service';
+import { supported, create, get } from "@github/webauthn-json";
+import { nanoid } from "nanoid";
 
 const WithdrawPage = () => {
     const router = useRouter();
@@ -21,12 +23,35 @@ const WithdrawPage = () => {
     const [usdCBalance, setUSDCBalance] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
 
+    function clean(str: any) {
+        return str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+      }
+      
+    function generateChallenge() {
+        return clean(btoa(nanoid(32)));
+    }
+
     const withdraw = async () => {
+        const challenge = generateChallenge();
+
         try {
-            setLoading(true);
-            const result = await withdrawAave(account, amount);
-            toast.success(`Transaction hash: ${result}`);
-            router.push('/wallet');
+            const credential = await get({
+                publicKey: {
+                challenge,
+                timeout: 60000,
+                userVerification: "required",
+                rpId: "localhost",
+                },
+            });
+
+            if(credential?.response.signature.length > 0) {
+                setLoading(true);
+                const result = await withdrawAave(account, amount);
+                toast.success(`Transaction hash: ${result}`);
+                router.push('/wallet');
+            } else {
+                toast.error(`Try Again.`);
+            }
         } catch(error : any) {
             console.error(error);
             toast.error(error?.response?.data);
@@ -39,23 +64,19 @@ const WithdrawPage = () => {
         setAmount(event.target.value);
     };
 
-    // useEffect(() => {
-    //     const token = Cookies.get("hanko");
-    //     if (token) {
-    //         setToken(token);
-    //     }
-    //   }, []);
 
       useEffect(() => {
         const getAccountData = async () => {
             try {
                 const data = await getAccount();    
 
-               let account = {
-                    crypto_wallet_address :  data.crypto_wallet_address,
-                    saving_wallet_address : data.saving_wallet_address,
-                    crypto_wallet_salt : data.crypto_wallet_salt,
-                    saving_wallet_salt : data.saving_wallet_salt,
+                let account = {
+                    crypto_wallet_address:  data.crypto_wallet_address,
+                    saving_wallet_address: data.saving_wallet_address,
+                    invest_wallet_address: data.invest_wallet_address,
+                    crypto_wallet_salt: data.crypto_wallet_salt,
+                    saving_wallet_salt: data.saving_wallet_salt,
+                    invest_wallet_salt: data.invest_wallet_salt
                 };
                 
                 setAccount(account);

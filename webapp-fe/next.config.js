@@ -15,6 +15,19 @@ const nextConfig = {
           },
         ],
       },
+      async headers() {
+        return [
+            {
+                source: '/(.*)?', // Matches all pages
+                headers: [
+                    {
+                        key: 'X-Frame-Options',
+                        value: '*',
+                    }
+                ]
+            }
+        ]
+    }  
 }
 
 module.exports = withPWA(nextConfig)

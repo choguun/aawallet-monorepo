@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf cache artifacts typechain typechain-types",
     "compile": "hardhat compile",
-    "deploy": "hardhat run --network mumbai scripts/1_deploy_factory.js"
+    "deploy": "hardhat run --network mumbai scripts/1_deploy_factory.js",
+    "deploy03": "hardhat run --network mumbai scripts/3_deploy_factory.js"
   },
   "author": "",
   "license": "ISC",

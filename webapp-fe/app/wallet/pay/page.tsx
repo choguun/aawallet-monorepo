@@ -16,6 +16,8 @@ import { getAccount } from '@/lib/service';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import QRCode from 'react-qr-code';
 import { PNG } from 'pngjs';
+import { supported, create, get } from "@github/webauthn-json";
+import { nanoid } from "nanoid";
 
 const WalletPayPage = () => {
     const [account, setAccount] = useState<any>({});
@@ -27,15 +29,37 @@ const WalletPayPage = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const webcamRef = useRef<Webcam>(null);
-
     const router = useRouter();
 
+    function clean(str: any) {
+      return str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+    }
+    
+    function generateChallenge() {
+        return clean(btoa(nanoid(32)));
+    }
+
     const transferTo = async () => {
-      try {
-        setLoading(true);
-        const result = await transfer(account, amount, toAddress);
-        toast.success(`Transaction hash: ${result}`);
-        router.push('/wallet');
+      const challenge = generateChallenge();
+
+        try {
+            const credential = await get({
+                publicKey: {
+                challenge,
+                timeout: 60000,
+                userVerification: "required",
+                rpId: "localhost",
+                },
+            });
+
+            if(credential?.response.signature.length > 0) {
+                setLoading(true);
+                const result = await transfer(account, amount, toAddress);
+                toast.success(`Transaction hash: ${result}`);
+                router.push('/wallet');
+            } else {
+                toast.error(`Try Again.`);
+            }
     } catch(error : any) {
         console.error(error);
         toast.error(error?.response?.data);
@@ -96,12 +120,14 @@ const WalletPayPage = () => {
           try {
               const data = await getAccount();    
 
-             let account = {
-                  crypto_wallet_address :  data.crypto_wallet_address,
-                  saving_wallet_address : data.saving_wallet_address,
-                  crypto_wallet_salt : data.crypto_wallet_salt,
-                  saving_wallet_salt : data.saving_wallet_salt,
-              };
+              let account = {
+                crypto_wallet_address:  data.crypto_wallet_address,
+                saving_wallet_address: data.saving_wallet_address,
+                invest_wallet_address: data.invest_wallet_address,
+                crypto_wallet_salt: data.crypto_wallet_salt,
+                saving_wallet_salt: data.saving_wallet_salt,
+                invest_wallet_salt: data.invest_wallet_salt
+            };
               
               setAccount(account);
               setSavingWalletAddress(data.saving_wallet_address);
@@ -170,8 +196,8 @@ const WalletPayPage = () => {
         </div> */}
         <Tabs style={{"width": "100%"}}>
         <TabList style={{"width": "100%"}}>
-          <Tab>MY QR</Tab>
-          <Tab>SCAN QR</Tab>
+          <Tab style={{width: "calc(100% / 2)"}}>MY QR</Tab>
+          <Tab style={{width: "calc(100% / 2)"}}>SCAN QR</Tab>
         </TabList>
         <TabPanel>
         <div className="bg-gray-200 w-screen md:w-[600px]">

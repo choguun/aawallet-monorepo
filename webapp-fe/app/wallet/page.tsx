@@ -17,13 +17,15 @@ import { Tooltip } from 'react-tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { getAccount } from '@/lib/service';
+import { TransakConfig, Transak } from '@transak/transak-sdk';
 
 
-type Wallet = {
-    wallet_name: string;
-    saving_wallet_address: string;
-    crypto_wallet_address: string;
-}
+const transakConfig: TransakConfig = {
+    apiKey: 'da009e06-ac71-428c-a75f-5959f5ab091e', // (Required)
+    environment: Transak.ENVIRONMENTS.STAGING, // (Required)
+    // .....
+    // For the full list of customisation options check the link below
+  };
 
 const WalletPage = () => {
     const router = useRouter();
@@ -33,7 +35,6 @@ const WalletPage = () => {
     const [savingBalance, setSavingBalance] = useState<number>(0);
     const [cryptoBalance, setCryptoBalance] = useState<number>(0);
     const [APY, setAPY] = useState<number>(0);
-    // const [token, setToken] = useState<string>('');
     const [copied, setCopied] = useState(false);
     const [loading, setLoading] = useState(true);
     const [loading2, setLoading2] = useState(true);
@@ -46,13 +47,45 @@ const WalletPage = () => {
 
     const provider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.infura.io/v3/737a357547e14224aa61a4b97d2754ef');
 
+    const transak = new Transak(transakConfig);
+
+    // To get all the events
+    Transak.on('*', (data) => {
+        console.log(data);
+    });
+
+    // This will trigger when the user closed the widget
+    Transak.on(Transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
+     console.log('Transak SDK closed!');
+    });
+
+    /*
+    * This will trigger when the user has confirmed the order
+    * This doesn't guarantee that payment has completed in all scenarios
+    * If you want to close/navigate away, use the TRANSAK_ORDER_SUCCESSFUL event
+    */
+    Transak.on(Transak.EVENTS.TRANSAK_ORDER_CREATED, (orderData) => {
+        console.log(orderData);
+    });
+
+    /*
+    * This will trigger when the user marks payment is made
+    * You can close/navigate away at this event
+    */
+    Transak.on(Transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (orderData) => {
+        console.log(orderData);
+        transak.close();
+    });
+
     // useEffect(() => {
-    //     const token = Cookies.get("hanko");
-    //     if (token) {
-    //         setToken(token);
-    //     }
+    //     transak.init();
+      
+    //     // Cleanup code
+    //     return () => {
+    //       transak.close();
+    //     };
     //   }, []);
-    
+
     useEffect(() => {
         const getSavingBalance = async () => {
             const erc20aUSDC = new ethers.Contract(aUSDCToken, erc20Abi, provider);
@@ -131,7 +164,8 @@ const WalletPage = () => {
 
           return data;
         },
-        retry: 1,
+        retry: 2,
+        refetchInterval: 5000,
     });
 
     const error2: any = error;
@@ -144,7 +178,7 @@ const WalletPage = () => {
     const onCopy = useCallback(() => {
         setCopied(true);
         toast.success('Copied to clipboard');
-      }, [])
+    }, [])
 
   return (
     <>
@@ -185,7 +219,7 @@ const WalletPage = () => {
                                     Balance:
                                 </span>  
                             </div>
-                            <div className="w-1/2 md:w-3/4 inline-block">
+                            <div className="w-1/2 md:w-3/4 inline-block align-top">
                                 {
                                 isLoading ? (
                                     <Skeleton className="float-right" width={'75%'} count={1} />
@@ -217,15 +251,16 @@ const WalletPage = () => {
                 <div className="border border-neutral-500 mb-6 w-full p-5 rounded-xl bg-black min-h-[200px]">
                     <div className="mb-3">
                         <span className="text-white text-md">
-                            Crypto Wallet
+                            Crypto Wallet(Main)
                         </span>
                         <CopyToClipboard onCopy={onCopy} text={cryptoWalletAddress}>
                             <span className="text-white float-right text-xs cursor-pointer underline">Copy Wallet Address</span>
                         </CopyToClipboard><br/>
                         <span className="mt-2 float-right">
-                            <a href="https://app.aave.com/faucet/" target="_blank">
+                            {/* <a href="https://app.aave.com/faucet/" target="_blank">
                                 <span className="text-xs underline text-white">faucet</span>
-                            </a>
+                            </a> */}
+                            <span className="text-xs underline text-white" onClick={() => transak.init()}>Deposit via credit card</span>
                         </span>
                     </div>
                     <div>

@@ -22,9 +22,9 @@ export const NavBar = (props : any) => {
                         <span>Invest</span>
                     </div>
                 </Link>
-                <Link href={'/history'}>
-                    <div className={twMerge('p-3 border border-black inline-block w-1/4 text-center',  path === '/history' ? 'bg-black text-white' : 'bg-white text-black')}>
-                        <span>History</span>
+                <Link href={'/portfolio'}>
+                    <div className={twMerge('p-3 border border-black inline-block w-1/4 text-center',  path === '/portfolio' ? 'bg-black text-white' : 'bg-white text-black')}>
+                        <span>Portfolios</span>
                     </div>
                 </Link>
                 <Link href={'/account'}>

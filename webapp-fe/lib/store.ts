@@ -4,6 +4,7 @@ import accountAbi from "./abi.json";
 import { getAccount } from './service';
 import ERC20_ABI from '@/assets/abis/erc20.abi.json';
 import AAVE_ABI from '@/assets/abis/aave.abi.json';
+import SWAP_ABI from '@/assets/abis/swap.abi.json';
 import config from '@/config.json';
 
 const signingKey = process.env.NEXT_PUBLIC_SIGNING_KEY!;
@@ -53,6 +54,9 @@ const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 const usdcToken = '0x52D800ca262522580CeBAD275395ca6e7598C014';
 const ausdcToken = '0x4086fabeE92a080002eeBA1220B9025a27a40A49';
 const aaveaddress = '0xcC6114B983E4Ed2737E9BD3961c9924e6216c704';
+const swapAddress = '0x3cC08b97EFb0d4255A374A842Ac545224A779bC7';
+const ptToken = '0xE8c886C4C737A867Da5f1E5D233c84f3B6938841';
+const usdtToken = '0x1fdE0eCc619726f4cD597887C9F3b4c8740e19e2';
 
 const transfer = async (account: any, amount: any, to: any) => {
     const { saving_wallet_address, crypto_wallet_address, crypto_wallet_salt, saving_wallet_salt } = account;
@@ -117,8 +121,7 @@ const transfer = async (account: any, amount: any, to: any) => {
 };
 
 const supplyAave = async (account: any, amount: any) => {
-    const { saving_wallet_address, crypto_wallet_address, crypto_wallet_salt, saving_wallet_salt } = account;
-    console.log(account);
+    const { saving_wallet_address, crypto_wallet_address, invest_wallet_address, crypto_wallet_salt, saving_wallet_salt, invest_wallet_salt } = account;
 
     const client = await Client.init(rpcUrl, {
         entryPoint: entryPoint
@@ -189,8 +192,8 @@ const supplyAave = async (account: any, amount: any) => {
    * @param to The address that will receive the underlying, same as msg.sender if the user
 */
 const withdrawAave = async (account: any, amount: any) => {
-    const { saving_wallet_address, crypto_wallet_address, crypto_wallet_salt, saving_wallet_salt } = account;
-    console.log(account);
+    const { saving_wallet_address, crypto_wallet_address, invest_wallet_address, crypto_wallet_salt, saving_wallet_salt, invest_wallet_salt } = account;
+
 
     const client = await Client.init(rpcUrl, {
         entryPoint: entryPoint
@@ -212,8 +215,6 @@ const withdrawAave = async (account: any, amount: any) => {
             salt: saving_wallet_salt
         }
     );
-
-    //const calls = await dosupplyAave(amount, crypto_wallet_address, saving_wallet_address);
 
     const usdc = new ethers.Contract(usdcToken, ERC20_ABI, provider);
     const ausdc = new ethers.Contract(ausdcToken, ERC20_ABI, provider);
@@ -249,6 +250,78 @@ const withdrawAave = async (account: any, amount: any) => {
       console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
 
       return ev?.transactionHash ?? null;
+};
+
+const investPendle = async (account: any, amount: any) => {
+  const { saving_wallet_address, crypto_wallet_address, invest_wallet_address, crypto_wallet_salt, saving_wallet_salt, invest_wallet_salt } = account;
+
+  const client = await Client.init(rpcUrl, {
+    entryPoint: entryPoint
+  });
+
+  const paymasterMiddleware = paymasterUrl
+  ? Presets.Middleware.verifyingPaymaster(paymasterUrl, {
+      type: "payg",
+    })
+  : undefined;
+
+  const simpleAccount = await Presets.Builder.SimpleAccount.init(
+      new ethers.Wallet(signingKey),
+      rpcUrl,
+      {   
+          paymasterMiddleware,
+          entryPoint: entryPoint,
+          factory: factory,
+          salt: crypto_wallet_salt
+      }
+  );
+
+  const usdt = new ethers.Contract(usdtToken, ERC20_ABI, provider);
+  const pt = new ethers.Contract(ptToken, ERC20_ABI, provider);
+  const swap = new ethers.Contract(swapAddress, SWAP_ABI, provider);
+
+  const decimals = await Promise.all([usdt.decimals()]);
+  const amount2 = ethers.utils.parseUnits(amount, decimals);
+
+  let dest: Array<string> = [];
+  let data: Array<string> = [];
+
+  dest = [usdt.address, swap.address, pt.address, pt.address];
+  data = [
+    usdt.interface.encodeFunctionData("approve", [
+      swap.address,
+      amount2,
+    ]),
+    swap.interface.encodeFunctionData("swap", [
+      usdt.address,
+      pt.address,
+      amount2
+    ]),
+    pt.interface.encodeFunctionData("approve", [
+      invest_wallet_address,
+      amount2,
+    ]),
+    pt.interface.encodeFunctionData("transfer", [
+      invest_wallet_address,
+      amount2
+    ])
+  ];
+
+  const res = await client.sendUserOperation(
+    simpleAccount.executeBatch(dest, data), {
+      onBuild: (op) => console.log("Signed UserOperation:", op),
+  });
+
+    console.log(`UserOpHash: ${res.userOpHash}`);
+    console.log("Waiting for transaction...");
+    const ev = await res.wait();
+    console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
+
+    return ev?.transactionHash ?? null;
+};
+
+const redeemPendle = async (account: any, amount: any) => {
+
 };
 
 // const submitUserOp = async (token: any, operation: string, uData: any) => {
@@ -306,4 +379,4 @@ const withdrawAave = async (account: any, amount: any) => {
 //     return ev?.transactionHash ?? null;
 // }
 
-export { supplyAave, withdrawAave, transfer }
+export { supplyAave, withdrawAave, transfer, investPendle, redeemPendle }

@@ -67,6 +67,8 @@ export async function POST(
     const crypto_wallet_address = result.data.crypto_wallet_address;
     const saving_wallet_salt = result.data.saving_wallet_salt;
     const saving_wallet_address = result.data.saving_wallet_address;
+    const invest_wallet_salt = result.data.invest_wallet_salt;
+    const invest_wallet_address = result.data.invest_wallet_address;
 
    await prisma.account.create({
         data: {
@@ -76,7 +78,9 @@ export async function POST(
           crypto_wallet_address: crypto_wallet_address,
           crypto_wallet_salt: crypto_wallet_salt,
           saving_wallet_address: saving_wallet_address,
-          saving_wallet_salt: saving_wallet_salt
+          saving_wallet_salt: saving_wallet_salt,
+          invest_wallet_address: invest_wallet_address,
+          invest_wallet_salt: invest_wallet_salt
         },
     });
 
