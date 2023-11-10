@@ -26,7 +26,7 @@ const DepositPage = () => {
 
     function clean(str: any) {
         return str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-      }
+    }
       
     function generateChallenge() {
         return clean(btoa(nanoid(32)));
@@ -42,7 +42,7 @@ const DepositPage = () => {
                 challenge,
                 timeout: 60000,
                 userVerification: "required",
-                rpId: "localhost",
+                rpId: "aawallet-monorepo.vercel.app",
                 },
             });
 
