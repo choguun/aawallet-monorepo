@@ -48,7 +48,7 @@ const WalletPayPage = () => {
                 challenge,
                 timeout: 60000,
                 userVerification: "required",
-                rpId: "aawallet-monorepo.vercel.app",
+                rpId: process.env.NEXT_PUBLIC_DOMAIN!,
                 },
             });
 
