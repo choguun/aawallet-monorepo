@@ -109,13 +109,13 @@ const AccountPage = () => {
                                 <input className="w-full rounded-md border border-black p-1" value={data?.wallet_name} disabled></input>
                             </div>
                             <div className="mt-3">
-                                <span className="font-semibold">PIN: </span>
-                                <input className="w-full rounded-md border border-black p-1" type="password" maxLength={6} value={data?.pin} disabled></input>
+                                <span className="font-semibold">Daily Spending Limit: </span>
+                                <input className="w-full rounded-md border border-black p-1" type="text" maxLength={6} value={data?.pin} disabled></input>
                             </div>
-                            <div className="mt-3">
+                            {/* <div className="mt-3">
                                 <span className="font-semibold">Confirm PIN: </span>
                                 <input className="w-full rounded-md border border-black p-1" type="password" maxLength={6} value={data?.confirm_pin} disabled></input>
-                            </div>
+                            </div> */}
                             <div className="mt-3">
                                 <Button className="w-full" type="submit" disabled>Update Profile</Button>
                             </div>
