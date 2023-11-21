@@ -33,7 +33,7 @@ export const NavBar = (props : any) => {
                     </div>
                 </Link>
                 <Link href={'/account'}>
-                    <div className={twMerge('p-3 border border-black inline-block w-1/4 text-center',  path === '/account' ? 'bg-black text-white' : 'bg-white text-black')}>
+                    <div className={twMerge('p-3 border border-black inline-block w-1/5 text-center',  path === '/account' ? 'bg-black text-white' : 'bg-white text-black')}>
                         <span>Account</span>
                     </div>
                 </Link>

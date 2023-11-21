@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { swap } from '@/lib/store';
 import { nanoid } from "nanoid";
 import { get } from "@github/webauthn-json";
+import { Button } from '@/components/ui/button';
 
 const SwapPage = () => {
     const router = useRouter();
@@ -132,12 +133,11 @@ const SwapPage = () => {
         onChange={(e) => setAmount1(e.target.value)}
       />
 
-      <button
+      <Button
         onClick={handleSwap}
-        className="mt-2"
       >
         Swap
-      </button>
+      </Button>
 
       {/* {receipt && (
         <Text>Swap transaction successful: {receipt.transactionHash}</Text>
