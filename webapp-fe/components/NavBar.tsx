@@ -13,17 +13,22 @@ export const NavBar = (props : any) => {
             {/* Bottom Navbar */}
             <div className="w-full md:w-[600px] bg-white fixed bottom-0 cursor-pointer">
                 <Link href={'/wallet'}>
-                    <div className={twMerge('p-3 border border-black inline-block w-1/4 text-center',  path === '/wallet' ? 'bg-black text-white' : 'bg-white text-black')}>
+                    <div className={twMerge('p-3 border border-black inline-block w-1/5 text-center',  path === '/wallet' ? 'bg-black text-white' : 'bg-white text-black')}>
                         <span>Wallet</span>
                     </div>
                 </Link>
                 <Link href={'/invest'}>
-                    <div className={twMerge('p-3 border border-black inline-block w-1/4 text-center',  path === '/invest' ? 'bg-black text-white' : 'bg-white text-black')}>
+                    <div className={twMerge('p-3 border border-black inline-block w-1/5 text-center',  path === '/invest' ? 'bg-black text-white' : 'bg-white text-black')}>
                         <span>Invest</span>
                     </div>
                 </Link>
+                <Link href={'/swap'}>
+                    <div className={twMerge('p-3 border border-black inline-block w-1/5 text-center',  path === '/swap' ? 'bg-black text-white' : 'bg-white text-black')}>
+                        <span>Swap</span>
+                    </div>
+                </Link>
                 <Link href={'/portfolio'}>
-                    <div className={twMerge('p-3 border border-black inline-block w-1/4 text-center',  path === '/portfolio' ? 'bg-black text-white' : 'bg-white text-black')}>
+                    <div className={twMerge('p-3 border border-black inline-block w-1/5 text-center',  path === '/portfolio' ? 'bg-black text-white' : 'bg-white text-black')}>
                         <span>Portfolios</span>
                     </div>
                 </Link>

@@ -5,6 +5,7 @@ import { getAccount } from './service';
 import ERC20_ABI from '@/assets/abis/erc20.abi.json';
 import AAVE_ABI from '@/assets/abis/aave.abi.json';
 import SWAP_ABI from '@/assets/abis/swap.abi.json';
+import ROUTER_ABI from '@/assets/abis/router.abi.json';
 import config from '@/config.json';
 
 const signingKey = process.env.NEXT_PUBLIC_SIGNING_KEY!;
@@ -14,42 +15,6 @@ const entryPoint = process.env.NEXT_PUBLIC_ENTRY_POINT!;
 const factory = process.env.NEXT_PUBLIC_FACTORY!;
 
 const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-
-
-// const dosupplyAave = async (_amount: any, from: any, to: any): Promise<Array<ICall>> => {
-//     const usdc = new ethers.Contract(usdcToken, ERC20_ABI, provider);
-//     const ausdc = new ethers.Contract(ausdcToken, ERC20_ABI, provider);
-//     const aave = new ethers.Contract(aaveaddress, AAVE_ABI, provider);
-
-//     const decimals = await Promise.all([usdc.decimals()]);
-//     const amount = ethers.utils.parseUnits(_amount, decimals);
-
-//     const approveUSDC = {
-//         to: usdc.address,
-//         value: 0,
-//         data: usdc.interface.encodeFunctionData("approve", [aave.address, amount])
-//     };
-
-//     const supplyUSDC = {
-//         to: aave.address,
-//         value: 0,
-//         data: aave.interface.encodeFunctionData("supply", [usdc.address, amount, to, 0])
-//     };
-
-//     // const approveAToken = {
-//     //     to: atoken.address,
-//     //     value: 0,
-//     //     data: atoken.interface.encodeFunctionData("approve", [to, amount])
-//     // };
-
-//     // const sendAToken = {
-//     //     to: atoken.address,
-//     //     value: 0,
-//     //     data: atoken.interface.encodeFunctionData("transfer", [to, amount])
-//     // };
-    
-//     return [approveUSDC, supplyUSDC];
-// }
 
 const usdcToken = '0x52D800ca262522580CeBAD275395ca6e7598C014';
 const ausdcToken = '0x4086fabeE92a080002eeBA1220B9025a27a40A49';
@@ -83,7 +48,6 @@ const transfer = async (account: any, amount: any, to: any) => {
         }
     );
 
-    // const usdc = new ethers.Contract(usdcToken, ERC20_ABI, provider);
     const ausdc = new ethers.Contract(ausdcToken, ERC20_ABI, provider);
     const aave = new ethers.Contract(aaveaddress, AAVE_ABI, provider);
 
@@ -193,7 +157,6 @@ const supplyAave = async (account: any, amount: any) => {
 */
 const withdrawAave = async (account: any, amount: any) => {
     const { saving_wallet_address, crypto_wallet_address, invest_wallet_address, crypto_wallet_salt, saving_wallet_salt, invest_wallet_salt } = account;
-
 
     const client = await Client.init(rpcUrl, {
         entryPoint: entryPoint
@@ -321,7 +284,84 @@ const investPendle = async (account: any, amount: any) => {
 };
 
 const redeemPendle = async (account: any, amount: any) => {
+  const { saving_wallet_address, crypto_wallet_address, invest_wallet_address, crypto_wallet_salt, saving_wallet_salt, invest_wallet_salt } = account;
 
+};
+
+/*
+  unction swapTokensForExactTokens(
+  uint amountOut, // Given an input asset amount, returns the maximum output amount of the other asset
+  uint amountInMax, // The maximum amount of input tokens that can be required before the transaction reverts
+  address[] calldata path, // An array of token addresses
+  address to, // Destination address
+  uint deadline // Unix timestamp after which the transaction will revert
+) external returns (uint[] memory amounts); //
+*/
+const swap = async (account: any, token1: any, amount1: any, token2: any, amount2: any) => {
+  const { saving_wallet_address, crypto_wallet_address, invest_wallet_address, crypto_wallet_salt, saving_wallet_salt, invest_wallet_salt } = account;
+
+  const client = await Client.init(rpcUrl, {
+    entryPoint: entryPoint
+  });
+
+  const paymasterMiddleware = paymasterUrl
+  ? Presets.Middleware.verifyingPaymaster(paymasterUrl, {
+      type: "payg",
+    })
+  : undefined;
+
+  const simpleAccount = await Presets.Builder.SimpleAccount.init(
+      new ethers.Wallet(signingKey),
+      rpcUrl,
+      {   
+          paymasterMiddleware,
+          entryPoint: entryPoint,
+          factory: factory,
+          salt: crypto_wallet_salt
+      }
+  );
+
+  const tokenIn = new ethers.Contract(token1, ERC20_ABI, provider);
+  const uniswapRouter = new ethers.Contract('', ROUTER_ABI, provider);
+
+  const decimals = await Promise.all([tokenIn.decimals()]);
+
+  let dest: Array<string> = [];
+  let data: Array<string> = [];
+
+  const amountOut = ethers.utils.parseEther('1'); // Desired output amount
+  const amountInMax = ethers.utils.parseUnits(amount1, decimals); // Maximum input amount
+  const path = [token1, token2]; // Path for the swap
+  const deadline = Math.floor(Date.now() / 1000) + 60 * 10; // Deadline for the transaction
+
+  dest = [tokenIn.address, uniswapRouter.address];
+  data = [
+    tokenIn.interface.encodeFunctionData("approve", [
+      uniswapRouter.address,
+      amountInMax,
+    ]),
+    uniswapRouter.interface.encodeFunctionData("swapTokensForExactTokens", [
+      amountOut,
+      amountInMax,
+      path,
+      crypto_wallet_address,
+      deadline
+    ]),
+  ];
+
+  const res = await client.sendUserOperation(
+    simpleAccount.executeBatch(dest, data), {
+      onBuild: (op) => console.log("Signed UserOperation:", op),
+  });
+
+  console.log(`UserOpHash: ${res.userOpHash}`);
+
+  console.log("Waiting for transaction...");
+  const ev = await res.wait();
+  console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
+
+
+  return ev?.transactionHash ?? null;
 };
 
 // const submitUserOp = async (token: any, operation: string, uData: any) => {
@@ -379,4 +419,4 @@ const redeemPendle = async (account: any, amount: any) => {
 //     return ev?.transactionHash ?? null;
 // }
 
-export { supplyAave, withdrawAave, transfer, investPendle, redeemPendle }
+export { supplyAave, withdrawAave, transfer, investPendle, redeemPendle, swap }
