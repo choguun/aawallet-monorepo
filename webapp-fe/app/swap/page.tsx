@@ -14,10 +14,7 @@ import { Button } from '@/components/ui/button';
 
 const SwapPage = () => {
     const router = useRouter();
-    const today = new Date();
 
-    const [loading, setLoading] = useState(true);
-    const [loading2, setLoading2] = useState(true);
     const [account, setAccount] = useState<any>({});
     const [token1, setToken1] = useState<string>('');
     const [token2, setToken2] = useState<string>('');
@@ -50,7 +47,7 @@ const SwapPage = () => {
             });
 
             if(credential?.response.signature.length > 0) {
-                setLoading(true);
+                setIsLoading(true);
                 const result = await swap(account, token1, amount1, token2, amount2);
                 toast.success(`Transaction hash: ${result}`);
                 router.push('/wallet');
@@ -62,7 +59,7 @@ const SwapPage = () => {
             console.error(error);
             toast.error(error?.response?.data);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -93,7 +90,7 @@ const SwapPage = () => {
 
     return (
         <div className="bg-gray-200 h-screen min-h-fint w-[600px]">
-             { (isLoading || loading || loading2) &&
+             { (isLoading) &&
                  <ReactLoading className="absolute top-1/3 left-1/3 md:left-1/2 z-50" type="spin" height={100} width={100} color="grey" />
             }
                 <div className="bg-gray-200">
@@ -108,14 +105,14 @@ const SwapPage = () => {
         placeholder="Input Token Address"
         value={token1}
         onChange={(e) => setToken1(e.target.value)}
-        className="mb-2"
+        className="mb-2 w-full"
       />
 
       <input
         placeholder="Output Token Address"
         value={token2}
         onChange={(e) => setToken2(e.target.value)}
-        className="mb-2"
+        className="mb-2 w-full"
       />
 
       <input
@@ -123,7 +120,7 @@ const SwapPage = () => {
         type="number"
         value={amount2}
         onChange={(e) => setAmount2(e.target.value)}
-        className="mb-2"
+        className="mb-2 w-full"
       />
 
       <input
@@ -131,10 +128,12 @@ const SwapPage = () => {
         type="number"
         value={amount1}
         onChange={(e) => setAmount1(e.target.value)}
+        className="w-full"
       />
 
       <Button
         onClick={handleSwap}
+        className="w-full"
       >
         Swap
       </Button>
