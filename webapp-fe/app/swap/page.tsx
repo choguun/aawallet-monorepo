@@ -101,34 +101,55 @@ const SwapPage = () => {
                     <div className="container mx-auto max-w-lg">
       <h1 className="text-2xl font-bold mb-4">Swap Tokens</h1>
 
-      <input
+      {/* <input
         placeholder="Input Token Address"
         value={token1}
         onChange={(e) => setToken1(e.target.value)}
         className="mb-2 w-full"
+      /> */}
+{/* 
+    const USDCToken = '0x52D800ca262522580CeBAD275395ca6e7598C014';
+    const USDTToken = "0x1fdE0eCc619726f4cD597887C9F3b4c8740e19e2";
+    const WETHToken = "0xc199807AF4fEDB02EE567Ed0FeB814A077de4802";
+*/}
+<span>From: </span>
+        <select className="w-full p-1" value={token1} onChange={(e) => setToken1(e.target.value)}>
+            <option value="">Select Token 1</option>
+            <option value="0x52D800ca262522580CeBAD275395ca6e7598C014">USDC</option>
+            <option value="0x1fdE0eCc619726f4cD597887C9F3b4c8740e19e2">USDT</option>
+            <option value="0xc199807AF4fEDB02EE567Ed0FeB814A077de4802">WETH</option>
+            {/* <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option> */}
+        </select>
+
+        <input
+        placeholder="Amount In"
+        type="number"
+        value={amount1}
+        onChange={(e) => setAmount1(e.target.value)}
+        className="mb-2 w-full mt-2 border border-black p-1"
       />
 
-      <input
-        placeholder="Output Token Address"
-        value={token2}
-        onChange={(e) => setToken2(e.target.value)}
-        className="mb-2 w-full"
-      />
+     <div className="mt-5"></div>
+     <span>To: </span>
+<select className="w-full p-1" value={token2} onChange={(e) => setToken2(e.target.value)}>
+            <option value="">Select Token 2</option>
+            <option value="0x52D800ca262522580CeBAD275395ca6e7598C014">USDC</option>
+            <option value="0x1fdE0eCc619726f4cD597887C9F3b4c8740e19e2">USDT</option>
+            <option value="0xc199807AF4fEDB02EE567Ed0FeB814A077de4802">WETH</option>
+            {/* <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option> */}
+        </select>
 
-      <input
+
+        <input
         placeholder="Amount Out"
         type="number"
         value={amount2}
         onChange={(e) => setAmount2(e.target.value)}
-        className="mb-2 w-full"
-      />
-
-      <input
-        placeholder="Amount In Max"
-        type="number"
-        value={amount1}
-        onChange={(e) => setAmount1(e.target.value)}
-        className="w-full"
+        className="mb-2 w-full mt-2 border border-black p-1"
       />
 
       <Button

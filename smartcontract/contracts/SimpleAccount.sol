@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "./core/BaseAccount.sol";
 import "./callback/TokenCallbackHandler.sol";
@@ -20,7 +21,7 @@ import "./interfaces/IPool.sol";
   *  has execute, eth handling methods
   *  has a single signer that can send requests through the entryPoint.
   */
-contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
+contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable, AccessControl {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
 
@@ -168,9 +169,21 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
         
     }
 
-    constructor(IEntryPoint anEntryPoint) {
+    uint256 minimumSignatures = 1;
+    mapping(bytes32 => uint256) public messageSignatures;
+
+    // just a function to add a signature
+    function sign(bytes32 _messageHash, bytes memory _signature, bytes32 _userOpHash) public {
+        address signer = _messageHash.recover(_signature);
+        if (hasRole(DEFAULT_ADMIN_ROLE, signer)) {
+            messageSignatures[_userOpHash] += 1;
+        }
+    }
+
+    constructor(IEntryPoint anEntryPoint, address owner2FAAddress) {
         _entryPoint = anEntryPoint;
         _disableInitializers();
+        _grantRole(DEFAULT_ADMIN_ROLE, owner2FAAddress);
     }
 
     function _onlyOwner() internal view {
@@ -300,6 +313,10 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     //     require(_nonce++ == userOp.nonce, "account: invalid nonce");
     // }
 
+     function supportsInterface(bytes4 interfaceId) public view virtual override(TokenCallbackHandler, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
     /// implement template method of BaseAccount
     function _validateSignature(UserOperation calldata userOp, bytes32 userOpHash)
     internal override virtual returns (uint256 validationData) {
@@ -308,7 +325,10 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
         if(signerAddress == address(0)){
             return SIG_VALIDATION_FAILED;
         }
-        else if (signerAddress == owner){
+        else if (signerAddress == owner && (
+            messageSignatures[userOpHash] >= minimumSignatures &&
+            hasRole(DEFAULT_ADMIN_ROLE, signerAddress)
+        )){
             return 0;
         }
         else if (recoveryVoters[signerAddress] && checkRecoveryVoterAllowedOps(userOp, signerAddress)){
