@@ -23,7 +23,7 @@ const Index = () => {
         </div>
         <div className="mt-5 text-center">
           <p>
-            A smart wallet that utilizes ERC-4337 standard(account abstraction) and passkey to increase user experience, it is easily to use and secure to onboard web2 users to web3. It has features like a savings account, multi-wallet, simplify to invest in DeFi Protocols, and daily use to pay merchants with a smart wallet.
+            A smart wallet that utilizes ERC-4337 standard to increase User experience and onboard web2 users to web3. It has features like a savings account, investing within a single click(zap) to crypto’s interest-bearing token and daily use to pay merchants with a smart wallet. 
           </p>
           <br/>
           <Link href={'/login'}>
@@ -33,44 +33,44 @@ const Index = () => {
         <div className="mt-8">
           <b className="text-xl">Features</b><br/>
 
-        -Seedless, Keyless and Passwordless<br/>
-
-        -Multi Smart Wallet<br/>
-
         -Open Saving account wallet<br/>
+
+        -Zap to invest<br/>
+
+        -Pay to merchants<br/>
 
         -Show crypto balances<br/>
 
-        -Gasless and Gas Abstraction with Paymaster
+        -Gasless with Paymaster
         </div>
         <div className="mt-5">
         <b className="text-xl">Road Map</b><br/>
   <b> Phase 1</b><br/>
--Build Web App<br/>
--Supported EVM Multi-Chain<br/>
--Paymaster and Gas Abstraction<br/>
--Zap to invest, staking, swap<br/>
--Embedded AA Wallet & SDK<br/>
--Private key on Secure Enclave<br/>
--On-ramp by credit cards<br/><br/>
+  -Integrate with AAVE(IbToken), Pendle Finance<br/>
+  -Build Web App<br/>
+  -EVM Multi Chain Support<br/>
+  -Features: Passwordless authentication, Saving account wallet, Zap to invest, Pay to merchants and Gasless with Paymaster<br/><br/>
   <b> Phase 2</b><br/>
-  -Mobile Apps<br/>
--NFT Features<br/>
--Other on-ramp solutions<br/>
--Off-ramp solutions<br/>
--Integrate with more DeFis<br/>
+  -Build Mobile App<br/>
+  -Integrate with more DeFi Protocol.<br/>
+  -Add more features like portfolio, swap and NFT<br/>
+  -On-ramp by credit cards<br/>
+  -HSM(Hardware security module) to protect privatekey<br/><br/>
+  <b>Phase 3</b><br/>
+  -Unified USDC Gas Tank<br/>
+  -Cross-chain Send<br/>
   -Integrate with RWA<br/>
         </div>
       </div>
       <div className="mt-1 mb-3 px-6">
-        {/* <span className="text-md font-semibold text-black">
+        <span className="text-md font-semibold text-black">
           Pitch Deck: 
         </span>
         <Link target="_blank" href={'https://drive.google.com/file/d/18GtINykr9XI_jAePQgtPN_moV0IwrXjZ/view?usp=sharing'}>
           <span className="ml-3 text-md font-bold text-black cursor-pointer">
             Link
           </span>
-        </Link> */}
+        </Link>
       </div>
       <footer className="bg-black">
         <div className="p-4">
@@ -83,7 +83,7 @@ const Index = () => {
             <div className="mt-3 text-center">
               <span className="text-white font-bold inline-block">
                   © 2023 Unify Wallet<br/>
-                  for only Polygon DevX [India] Hackathon
+                  for only BANGKOK BUIDL 2023
               </span>
             </div>
             <div className="mt-3 text-center">
